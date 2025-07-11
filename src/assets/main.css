@@ -1,0 +1,14 @@
+@import './base.css';
+@import 'tailwindcss';
+
+body {
+  margin: 0;
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: oklch(74% 0.238 322.16);
+  transition: 0.4s;
+  padding: 3px;
+}
