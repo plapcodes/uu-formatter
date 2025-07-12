@@ -25,5 +25,20 @@ export const useLayerStore = defineStore('layer', {
         this.parentGroup.layers.unshift(newGroup);
       }
     },
+    selectLayer(id: string): void {
+      if (this.parentGroup) {
+        const searchLayers = (layers: LayerGroup['layers']) => {
+          for (const layer of layers) {
+            layer.selected = false;
+            if (layer.id === id) {
+              layer.selected = true;
+            } else if ('layers' in layer) {
+              searchLayers(layer.layers);
+            }
+          }
+        };
+        searchLayers(this.parentGroup.layers);
+      }
+    },
   },
 });

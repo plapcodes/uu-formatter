@@ -1,6 +1,6 @@
 import { makeLayerGroup, makeLayer } from './layer';
 import type { Layer, LayerGroup, LayerConfig, LayerGroupConfig } from './layer';
-import { uuid } from './utils';
+import { uuid } from './uuid';
 
 export * from './layer';
 export * from './utils';
@@ -27,6 +27,7 @@ export function defaultParentGroup(): LayerGroup {
         name: 'Default Layer',
         description: 'This is a default layer with no activator, selector, or transformer.',
         enabled: true,
+        expanded: true,
         activator: { type: 'ALWAYS' as const, options: { enabled: true } },
         selector: { type: 'ENTIRE' as const },
         transformer: { type: 'REMAP' as const, options: { remap: {} } },
@@ -42,6 +43,7 @@ export function defaultParentGroup(): LayerGroup {
             id: uuid(),
             name: 'Empty Layer',
             enabled: true,
+            expanded: true,
             description: 'This is an empty layer with no activator, selector, or transformer.',
             activator: { type: 'ALWAYS' as const, options: { enabled: true } },
             selector: { type: 'ENTIRE' as const },
@@ -72,6 +74,7 @@ export function defaultLayer(): Layer {
     name: 'Default Layer',
     description: 'This is a default layer with no activator, selector, or transformer.',
     enabled: true,
+    expanded: true,
     activator: { type: 'ALWAYS' as const, options: { enabled: true } },
     selector: { type: 'ENTIRE' as const },
     transformer: { type: 'REMAP' as const, options: { remap: {} } },

@@ -14,6 +14,8 @@ export interface Layer {
   name: string;
   description?: string;
   enabled: boolean;
+  expanded: boolean;
+  selected: boolean;
   activator: IActivator;
   selector: ISelector;
   transformer: ITransformer;
@@ -24,6 +26,7 @@ export interface LayerConfig {
   name: string;
   description?: string;
   enabled: boolean;
+  expanded: boolean;
   activator: ActivatorConfig;
   selector: SelectorConfig;
   transformer: TransformerConfig;
@@ -40,6 +43,7 @@ export interface LayerGroup {
   description?: string;
   expanded: boolean;
   enabled: boolean;
+  selected: boolean;
   layers: (Layer | LayerGroup)[];
 }
 
@@ -58,6 +62,8 @@ export function makeLayer(config: LayerConfig): Layer {
     name: config.name,
     description: config.description,
     enabled: config.enabled,
+    expanded: config.expanded,
+    selected: false,
     activator: createActivator(config.activator),
     selector: createSelector(config.selector),
     transformer: createTransformer(config.transformer),
@@ -79,6 +85,7 @@ export function makeLayerGroup(config: LayerGroupConfig): LayerGroup {
     description: config.description,
     expanded: config.expanded,
     enabled: config.enabled,
+    selected: false,
     layers: layers,
   };
 }

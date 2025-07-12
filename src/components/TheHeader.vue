@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router';
+import ThemeToggle from './ThemeToggle.vue';
 </script>
 
 <template>
@@ -18,7 +19,9 @@ import { RouterLink } from 'vue-router';
           <RouterLink to="/about" class="text-xl font-bold">About</RouterLink>
         </div>
       </div>
-      <div></div>
+      <div class="z-10">
+        <ThemeToggle></ThemeToggle>
+      </div>
     </nav>
   </header>
 </template>

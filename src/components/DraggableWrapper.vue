@@ -13,6 +13,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'updateGroup', group: LayerGroup): void;
+  (e: 'selectLayer', id: string): void;
 }>();
 
 function updateLayer(layer: Layer) {
@@ -33,12 +34,12 @@ function updateGroup(group: LayerGroup) {
   emit('updateGroup', newGroup);
 }
 
-function toggleGroupExpansion(group: LayerGroup) {
+function toggleGroupExpansion(group: LayerGroup | Layer) {
   if (!props.group.value) return;
   const newGroup = {
     ...props.group.value,
     layers: props.group.value.layers.map((l) =>
-      l.id === group.id && isLayerGroup(l) ? { ...l, expanded: !l.expanded } : l,
+      l.id === group.id ? { ...l, expanded: !l.expanded } : l,
     ),
   };
   emit('updateGroup', newGroup);
@@ -48,21 +49,38 @@ function toggleGroupExpansion(group: LayerGroup) {
 <template>
   <draggableComponent tag="ul" :list="group.value.layers" item-key="id" :group="{ name: 'layers' }">
     <template #item="{ element }: { element: LayerGroup | Layer }">
-      <div v-if="isLayerGroup(element)" class="flex flex-col w-full">
+      <div
+        class="flex flex-col w-full"
+        :class="element.selected ? 'selected-layer' : ''"
+        @click.stop="$emit('selectLayer', element.id)"
+      >
         <div class="the-layer-group flex flex-col w-full">
           <div class="flex flex-row gap-4">
-            <button class="cursor-pointer" @click="toggleGroupExpansion(element)">
-              <ChevronDownIcon class="w-4 h-4 text-slate-200" />
+            <button class="cursor-pointer" @click.stop="toggleGroupExpansion(element)">
+              <ChevronDownIcon
+                class="w-4 h-4 text-slate-200"
+                :class="!element.expanded ? 'rotate-270' : ''"
+              />
             </button>
             <span class="text-xl">{{ element.name }}</span>
             <i class="handle"> </i>
           </div>
         </div>
         <div v-if="element.expanded" class="sublayers w-full pl-4">
-          <DraggableWrapper :group="ref(element)" @update-group="updateGroup" />
+          <DraggableWrapper
+            v-if="isLayerGroup(element)"
+            :group="ref(element)"
+            @update-group="updateGroup"
+            @select-layer="$emit('selectLayer', $event)"
+          />
+          <TheLayer
+            v-else
+            :layer="ref(element)"
+            @update-layer="updateLayer"
+            @click.stop="$emit('selectLayer', element.id)"
+          />
         </div>
       </div>
-      <TheLayer v-else :layer="ref(element)" @update-layer="updateLayer" />
     </template>
   </draggableComponent>
 </template>
