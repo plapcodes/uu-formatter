@@ -1,4 +1,5 @@
-import { makeLayerGroup, type LayerGroup, type LayerGroupConfig } from './layer';
+import { makeLayerGroup, makeLayer } from './layer';
+import type { Layer, LayerGroup, LayerConfig, LayerGroupConfig } from './layer';
 
 export * from './layer';
 
@@ -47,4 +48,28 @@ export function defaultParentGroup(): LayerGroup {
     ],
   };
   return makeLayerGroup(defaultGroupConfig);
+}
+
+export function defaultLayerGroup(): LayerGroup {
+  const defaultGroupConfig: LayerGroupConfig = {
+    id: 'default-layer-group',
+    name: 'Default Layer Group',
+    description: 'This is a default layer group with no layers.',
+    enabled: true,
+    layers: [],
+  };
+  return makeLayerGroup(defaultGroupConfig);
+}
+
+export function defaultLayer(): Layer {
+  const defaultLayerConfig: LayerConfig = {
+    id: 'default-layer',
+    name: 'Default Layer',
+    description: 'This is a default layer with no activator, selector, or transformer.',
+    enabled: true,
+    activator: { type: 'ALWAYS' as const, options: { enabled: true } },
+    selector: { type: 'ENTIRE' as const },
+    transformer: { type: 'REMAP' as const, options: { remap: {} } },
+  };
+  return makeLayer(defaultLayerConfig);
 }

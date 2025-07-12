@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
-import { defaultParentGroup, type LayerGroup } from '@/lib';
+import { defaultParentGroup, defaultLayer, defaultLayerGroup } from '@/lib';
+import type { LayerGroup } from '@/lib';
 
 export const useLayerStore = defineStore('layer', {
   state: () => ({
@@ -10,6 +11,18 @@ export const useLayerStore = defineStore('layer', {
     initializeParentGroup() {
       if (this.parentGroup === null) {
         this.parentGroup = defaultParentGroup() as LayerGroup;
+      }
+    },
+    addLayer() {
+      if (this.parentGroup) {
+        const newLayer = defaultLayer();
+        this.parentGroup.layers.unshift(newLayer);
+      }
+    },
+    addLayerGroup() {
+      if (this.parentGroup) {
+        const newGroup = defaultLayerGroup();
+        this.parentGroup.layers.unshift(newGroup);
       }
     },
   },

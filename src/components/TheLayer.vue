@@ -8,6 +8,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'updateLayer', layer: Layer): void;
+  (e: 'deleteLayer', layer: Layer): void;
 }>();
 
 const updateLayerName = (event: Event) => {
@@ -24,13 +25,13 @@ const handlePaste = (e: ClipboardEvent) => {
 </script>
 
 <template>
-  <div class="the-layer">
+  <div class="the-layer flex flex-row items-center">
     <span
       contenteditable="true"
       @input="updateLayerName"
       @keydown.enter.prevent
       @paste="(e) => handlePaste(e)"
-      >{{ props.layer.value.name }}</span
-    >
+      >{{ props.layer.value.name }}
+    </span>
   </div>
 </template>

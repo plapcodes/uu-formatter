@@ -8,8 +8,8 @@ import type { LayerGroup } from '@/lib';
 
 const layerStore = useLayerStore();
 
-layerStore.$subscribe((mutation, state) => {
-  console.log('Layer store updated:', mutation, state);
+onMounted(() => {
+  layerStore.initializeParentGroup();
 });
 
 function updateParentGroup(newGroup: LayerGroup) {
@@ -18,9 +18,13 @@ function updateParentGroup(newGroup: LayerGroup) {
   });
 }
 
-onMounted(() => {
-  layerStore.initializeParentGroup();
-});
+function addLayer() {
+  layerStore.addLayer();
+}
+
+function addGroup() {
+  layerStore.addLayerGroup();
+}
 </script>
 
 <template>
@@ -28,12 +32,12 @@ onMounted(() => {
     <div class="w-full flex justify-between items-center">
       <h1 class="text-3xl text-slate-200 font-semibold">Text Processing Layers</h1>
       <div class="flex flex-row gap-4">
-        <ExpandingButton text="Add Layer">
+        <ExpandingButton text="Add Layer" @click="addLayer">
           <template #icon>
             <PlusIcon class="w-6 h-6" />
           </template>
         </ExpandingButton>
-        <ExpandingButton text="Add Group">
+        <ExpandingButton text="Add Group" @click="addGroup">
           <template #icon>
             <FolderPlusIcon class="w-6 h-6" />
           </template>
