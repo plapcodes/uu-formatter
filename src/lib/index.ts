@@ -17,6 +17,7 @@ export function defaultParentGroup(): LayerGroup {
     id: 'default',
     name: 'Normal Default Layer Group',
     description: 'This is the default parent group.',
+    expanded: true,
     enabled: true,
     layers: [
       {
@@ -32,6 +33,7 @@ export function defaultParentGroup(): LayerGroup {
         id: 'default-layer-group',
         name: 'Funny Default Layer Group',
         description: 'This is a default layer group with no layers.',
+        expanded: false,
         enabled: true,
         layers: [
           {
@@ -55,6 +57,7 @@ export function defaultLayerGroup(): LayerGroup {
     id: 'default-layer-group',
     name: 'Default Layer Group',
     description: 'This is a default layer group with no layers.',
+    expanded: true,
     enabled: true,
     layers: [],
   };

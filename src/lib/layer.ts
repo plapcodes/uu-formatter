@@ -38,6 +38,7 @@ export interface LayerGroup {
   id: string;
   name: string;
   description?: string;
+  expanded: boolean;
   enabled: boolean;
   layers: (Layer | LayerGroup)[];
 }
@@ -46,6 +47,7 @@ export interface LayerGroupConfig {
   id: string;
   name: string;
   description?: string;
+  expanded: boolean;
   enabled: boolean;
   layers: (LayerConfig | LayerGroupConfig)[];
 }
@@ -75,6 +77,7 @@ export function makeLayerGroup(config: LayerGroupConfig): LayerGroup {
     id: config.id,
     name: config.name,
     description: config.description,
+    expanded: config.expanded,
     enabled: config.enabled,
     layers: layers,
   };

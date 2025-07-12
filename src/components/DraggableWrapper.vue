@@ -32,6 +32,17 @@ function updateGroup(group: LayerGroup) {
   };
   emit('updateGroup', newGroup);
 }
+
+function toggleGroupExpansion(group: LayerGroup) {
+  if (!props.group.value) return;
+  const newGroup = {
+    ...props.group.value,
+    layers: props.group.value.layers.map((l) =>
+      l.id === group.id && isLayerGroup(l) ? { ...l, expanded: !l.expanded } : l,
+    ),
+  };
+  emit('updateGroup', newGroup);
+}
 </script>
 
 <template>
@@ -40,14 +51,14 @@ function updateGroup(group: LayerGroup) {
       <div v-if="isLayerGroup(element)" class="flex flex-col w-full">
         <div class="the-layer-group flex flex-col w-full">
           <div class="flex flex-row gap-4">
-            <button class="cursor-pointer">
+            <button class="cursor-pointer" @click="toggleGroupExpansion(element)">
               <ChevronDownIcon class="w-4 h-4 text-slate-200" />
             </button>
             <span class="text-xl">{{ element.name }}</span>
             <i class="handle"> </i>
           </div>
         </div>
-        <div class="sublayers w-full pl-4">
+        <div v-if="element.expanded" class="sublayers w-full pl-4">
           <DraggableWrapper :group="ref(element)" @update-group="updateGroup" />
         </div>
       </div>
