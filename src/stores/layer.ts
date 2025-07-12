@@ -8,7 +8,7 @@ export const useLayerStore = defineStore('layer', {
   persist: true,
   actions: {
     initializeParentGroup() {
-      if (!this.parentGroup) {
+      if (this.parentGroup === null) {
         this.parentGroup = defaultParentGroup() as LayerGroup;
       }
     },

@@ -8,7 +8,7 @@ import { isLayerGroup } from '@/lib';
 import draggableComponent from 'vuedraggable';
 
 const props = defineProps<{
-  group: Ref<LayerGroup | null>;
+  group: Ref<LayerGroup>;
 }>();
 
 const emit = defineEmits<{
@@ -35,12 +35,7 @@ function updateGroup(group: LayerGroup) {
 </script>
 
 <template>
-  <draggableComponent
-    tag="ul"
-    :list="group.value!.layers"
-    item-key="id"
-    :group="{ name: 'layers' }"
-  >
+  <draggableComponent tag="ul" :list="group.value.layers" item-key="id" :group="{ name: 'layers' }">
     <template #item="{ element }: { element: LayerGroup | Layer }">
       <div v-if="isLayerGroup(element)" class="flex flex-col w-full">
         <div class="the-layer-group flex flex-col w-full">

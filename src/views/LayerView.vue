@@ -3,7 +3,7 @@ import DraggableWrapper from '@/components/DraggableWrapper.vue';
 import ExpandingButton from '@/components/ExpandingButton.vue';
 import { PlusIcon, FolderPlusIcon } from '@heroicons/vue/24/outline';
 import { useLayerStore } from '@/stores/layer';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import type { LayerGroup } from '@/lib';
 
 const layerStore = useLayerStore();
@@ -17,6 +17,10 @@ function updateParentGroup(newGroup: LayerGroup) {
     parentGroup: newGroup,
   });
 }
+
+onMounted(() => {
+  layerStore.initializeParentGroup();
+});
 </script>
 
 <template>
@@ -38,7 +42,11 @@ function updateParentGroup(newGroup: LayerGroup) {
     </div>
 
     <div id="layer-list" class="w-full flex-1">
-      <DraggableWrapper :group="ref(layerStore.parentGroup)" @update-group="updateParentGroup" />
+      <DraggableWrapper
+        v-if="layerStore.parentGroup !== null"
+        :group="ref(layerStore.parentGroup)"
+        @update-group="updateParentGroup"
+      />
     </div>
   </div>
 </template>
