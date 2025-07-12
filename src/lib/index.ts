@@ -1,7 +1,9 @@
 import { makeLayerGroup, makeLayer } from './layer';
 import type { Layer, LayerGroup, LayerConfig, LayerGroupConfig } from './layer';
+import { uuid } from './utils';
 
 export * from './layer';
+export * from './utils';
 
 export const isLayerGroup = (item: unknown): item is LayerGroup => {
   return (
@@ -14,14 +16,14 @@ export const isLayerGroup = (item: unknown): item is LayerGroup => {
 
 export function defaultParentGroup(): LayerGroup {
   const defaultGroupConfig: LayerGroupConfig = {
-    id: 'default',
+    id: uuid(),
     name: 'Normal Default Layer Group',
     description: 'This is the default parent group.',
     expanded: true,
     enabled: true,
     layers: [
       {
-        id: 'default-layer',
+        id: uuid(),
         name: 'Default Layer',
         description: 'This is a default layer with no activator, selector, or transformer.',
         enabled: true,
@@ -30,14 +32,14 @@ export function defaultParentGroup(): LayerGroup {
         transformer: { type: 'REMAP' as const, options: { remap: {} } },
       },
       {
-        id: 'default-layer-group',
+        id: uuid(),
         name: 'Funny Default Layer Group',
         description: 'This is a default layer group with no layers.',
         expanded: false,
         enabled: true,
         layers: [
           {
-            id: 'empty-layer',
+            id: uuid(),
             name: 'Empty Layer',
             enabled: true,
             description: 'This is an empty layer with no activator, selector, or transformer.',
@@ -54,7 +56,7 @@ export function defaultParentGroup(): LayerGroup {
 
 export function defaultLayerGroup(): LayerGroup {
   const defaultGroupConfig: LayerGroupConfig = {
-    id: 'default-layer-group',
+    id: uuid(),
     name: 'Default Layer Group',
     description: 'This is a default layer group with no layers.',
     expanded: true,
@@ -66,7 +68,7 @@ export function defaultLayerGroup(): LayerGroup {
 
 export function defaultLayer(): Layer {
   const defaultLayerConfig: LayerConfig = {
-    id: 'default-layer',
+    id: uuid(),
     name: 'Default Layer',
     description: 'This is a default layer with no activator, selector, or transformer.',
     enabled: true,
