@@ -51,6 +51,7 @@ function addGroup() {
       <DraggableWrapper
         v-if="layerStore.parentGroup !== null"
         :group="ref(layerStore.parentGroup)"
+        :depth="0"
         @update-group="updateParentGroup"
         @selectLayer="layerStore.selectLayer"
       />

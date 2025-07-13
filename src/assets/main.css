@@ -1,6 +1,7 @@
 @import './base.css';
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@source inline("pl-{2..100..2}");
 
 @custom-variant dark (&:is(.dark *));
 
