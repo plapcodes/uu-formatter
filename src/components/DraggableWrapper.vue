@@ -143,7 +143,7 @@ function fixGhostImage(dataTransfer: DataTransfer, dragEl: HTMLElement) {
     :style="{ '--ghost-depth': ghostDepth }"
     @dragover.prevent="onDragOver"
   >
-    <template #item="{ element }: { element: LayerGroup | Layer }">
+    <template #item="{ element, index }: { element: LayerGroup | Layer; index: number }">
       <div
         :id="element.id"
         class="flex flex-col w-full layer-item py-0.5"
@@ -151,7 +151,11 @@ function fixGhostImage(dataTransfer: DataTransfer, dragEl: HTMLElement) {
       >
         <div
           class="flex flex-col w-full"
-          :class="`pl-${getLayerDepth(element, props.group.value, props.depth) * 4} ${element.selected ? 'selected-layer' : ''} ${element.expanded ? 'has-sublayers' : ''}`"
+          :class="[
+            `pl-${getLayerDepth(element, props.group.value, props.depth) * 4}`,
+            element.selected ? 'selected-layer' : '',
+            'border-b border-neutral-700',
+          ]"
         >
           <div class="flex flex-row gap-4 items-center">
             <button class="cursor-pointer" @click.stop="toggleExpansion(element)">
@@ -181,16 +185,19 @@ function fixGhostImage(dataTransfer: DataTransfer, dragEl: HTMLElement) {
             />
           </div>
         </div>
-        <div class="sublayers w-full">
+        <div
+          v-if="isLayerGroup(element) && element.expanded"
+          class="sublayers w-full border-b border-neutral-700"
+        >
           <DraggableWrapper
-            v-if="isLayerGroup(element) && element.expanded"
             :group="ref(element)"
             :depth="depth + 1"
             @update-group="updateGroup"
             @select-layer="$emit('selectLayer', $event)"
           />
+        </div>
+        <div v-else-if="!isLayerGroup(element) && element.expanded" class="sublayers w-full">
           <TheLayer
-            v-else-if="!isLayerGroup(element) && element.expanded"
             :layer="ref(element)"
             @update-layer="updateLayer"
             @click.stop="$emit('selectLayer', element.id)"
