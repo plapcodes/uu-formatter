@@ -26,6 +26,10 @@ function addLayer() {
 function addGroup() {
   layerStore.addLayerGroup();
 }
+
+layerStore.$subscribe((mutation, state) => {
+  console.log('Layer store updated:', mutation, state);
+});
 </script>
 
 <template>

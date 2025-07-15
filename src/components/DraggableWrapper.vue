@@ -6,6 +6,7 @@ import TheLayer from './TheLayer.vue';
 import { Icon } from '@iconify/vue';
 import { isLayerGroup } from '@/lib';
 import draggableComponent from 'vuedraggable';
+import Switch from '@/components/ui/switch/Switch.vue';
 
 const ghostDepth = ref(0);
 
@@ -35,6 +36,16 @@ function updateGroup(group: LayerGroup) {
     layers: props.group.value.layers.map((l) => (l.id === group.id ? group : l)),
   };
   emit('updateGroup', newGroup);
+}
+
+function updateElement(element: LayerGroup | Layer, newValue: boolean) {
+  const updatedElement = { ...element, enabled: newValue };
+  if (!props.group.value) return;
+  if (isLayerGroup(updatedElement)) {
+    updateGroup(updatedElement);
+  } else {
+    updateLayer(updatedElement);
+  }
 }
 
 function toggleExpansion(group: LayerGroup | Layer) {
@@ -104,6 +115,7 @@ function onDragOver(e: DragEvent) {
   // The ghost's padding should be based on the depth of the list it's being dropped into.
   ghostDepth.value = props.depth;
 }
+
 function fixGhostImage(dataTransfer: DataTransfer, dragEl: HTMLElement) {
   const ghostImage = document.createElement('div');
   ghostImage.id = 'ghost-image';
@@ -141,7 +153,7 @@ function fixGhostImage(dataTransfer: DataTransfer, dragEl: HTMLElement) {
           class="flex flex-col w-full"
           :class="`pl-${getLayerDepth(element, props.group.value, props.depth) * 4} ${element.selected ? 'selected-layer' : ''} ${element.expanded ? 'has-sublayers' : ''}`"
         >
-          <div class="flex flex-row gap-4">
+          <div class="flex flex-row gap-4 items-center">
             <button class="cursor-pointer" @click.stop="toggleExpansion(element)">
               <Icon
                 icon="heroicons:chevron-down"
@@ -149,6 +161,11 @@ function fixGhostImage(dataTransfer: DataTransfer, dragEl: HTMLElement) {
                 :class="!element.expanded ? 'rotate-270' : ''"
               />
             </button>
+            <Icon
+              v-if="isLayerGroup(element)"
+              :icon="`heroicons-folder${element.expanded ? '-open' : ''}-solid`"
+              style="font-size: 18px"
+            />
             <span
               class="text-xl"
               contenteditable="true"
@@ -157,7 +174,11 @@ function fixGhostImage(dataTransfer: DataTransfer, dragEl: HTMLElement) {
               @paste="(e) => handlePaste(e)"
               >{{ element.name }}</span
             >
-            <i class="handle"> </i>
+            <Switch
+              :model-value="element.enabled"
+              @update:model-value="(newValue) => updateElement(element, newValue)"
+              class="ml-auto layer-switch"
+            />
           </div>
         </div>
         <div class="sublayers w-full">
@@ -191,5 +212,9 @@ function fixGhostImage(dataTransfer: DataTransfer, dragEl: HTMLElement) {
 .drop-target {
   background-color: #4a4a4a;
   border: 1px dashed #ffffff;
+}
+
+.layer-switch {
+  margin-left: auto;
 }
 </style>
