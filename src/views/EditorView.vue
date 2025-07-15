@@ -3,11 +3,7 @@ import LayerView from './LayerView.vue';
 import Button from '@/components/ui/button/Button.vue';
 import HoverButton from '@/components/HoverButton.vue';
 import { ref } from 'vue';
-import {
-  ArrowsPointingOutIcon,
-  ArrowsPointingInIcon,
-  ClipboardIcon,
-} from '@heroicons/vue/24/outline';
+import { Icon } from '@iconify/vue';
 import ResizablePanelGroup from '@/components/ui/resizable/ResizablePanelGroup.vue';
 import ResizableHandle from '@/components/ui/resizable/ResizableHandle.vue';
 import ResizablePanel from '@/components/ui/resizable/ResizablePanel.vue';
@@ -35,13 +31,13 @@ function updateText(event: Event) {
             <div class="absolute right-3 top-3 flex gap-2">
               <HoverButton hint="Contract">
                 <Button variant="outline" size="icon">
-                  <ArrowsPointingInIcon />
+                  <Icon icon="heroicons:arrows-pointing-in" />
                 </Button>
               </HoverButton>
 
               <HoverButton hint="Expand">
                 <Button variant="outline" size="icon">
-                  <ArrowsPointingOutIcon />
+                  <Icon icon="heroicons:arrows-pointing-out" />
                 </Button>
               </HoverButton>
             </div>
@@ -59,7 +55,7 @@ function updateText(event: Event) {
             <div class="absolute right-3 top-3 flex gap-2">
               <HoverButton hint="Copy to Clipboard">
                 <Button variant="outline" size="icon">
-                  <ClipboardIcon />
+                  <Icon icon="heroicons:clipboard" />
                 </Button>
               </HoverButton>
             </div>

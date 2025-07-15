@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import DraggableWrapper from '@/components/DraggableWrapper.vue';
-import { PlusIcon, FolderPlusIcon } from '@heroicons/vue/24/outline';
+import { Icon } from '@iconify/vue';
 import { useLayerStore } from '@/stores/layer';
 import { onMounted, ref } from 'vue';
 import type { LayerGroup } from '@/lib';
@@ -35,13 +35,13 @@ function addGroup() {
       <div class="flex flex-row gap-4 items-center">
         <HoverButton hint="Add Layer">
           <Button variant="outline" size="icon" @click="addLayer">
-            <PlusIcon />
+            <Icon icon="heroicons:plus" />
           </Button>
         </HoverButton>
 
         <HoverButton hint="Add Layer Group">
           <Button variant="outline" size="icon" @click="addGroup">
-            <FolderPlusIcon />
+            <Icon icon="heroicons:folder-plus" />
           </Button>
         </HoverButton>
       </div>

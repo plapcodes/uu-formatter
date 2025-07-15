@@ -3,7 +3,7 @@ import type { Layer, LayerGroup } from '@/lib';
 import type { Ref } from 'vue';
 import { ref } from 'vue';
 import TheLayer from './TheLayer.vue';
-import { ChevronDownIcon } from '@heroicons/vue/24/outline';
+import { Icon } from '@iconify/vue';
 import { isLayerGroup } from '@/lib';
 import draggableComponent from 'vuedraggable';
 
@@ -143,7 +143,8 @@ function fixGhostImage(dataTransfer: DataTransfer, dragEl: HTMLElement) {
         >
           <div class="flex flex-row gap-4">
             <button class="cursor-pointer" @click.stop="toggleExpansion(element)">
-              <ChevronDownIcon
+              <Icon
+                icon="heroicons:chevron-down"
                 class="w-4 h-4 text-slate-200"
                 :class="!element.expanded ? 'rotate-270' : ''"
               />
