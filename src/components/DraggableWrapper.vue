@@ -7,6 +7,8 @@ import { ChevronDownIcon } from '@heroicons/vue/24/outline';
 import { isLayerGroup } from '@/lib';
 import draggableComponent from 'vuedraggable';
 
+const ghostDepth = ref(0);
+
 const props = defineProps<{
   group: Ref<LayerGroup>;
   depth: number;
@@ -16,88 +18,6 @@ const emit = defineEmits<{
   (e: 'updateGroup', group: LayerGroup): void;
   (e: 'selectLayer', id: string): void;
 }>();
-
-interface DndMoveEvent {
-  related: HTMLElement;
-  from: HTMLElement;
-  to: HTMLElement;
-  draggedContext: {
-    element?: Layer | LayerGroup;
-    futureIndex: number;
-  };
-  relatedContext: {
-    element?: Layer | LayerGroup;
-  };
-}
-
-interface DndEndEvent {
-  oldIndex?: number;
-  newIndex?: number;
-  from: HTMLElement;
-  to: HTMLElement;
-}
-
-const dropTargetId = ref<string | null>(null);
-
-function onMove(event: DndMoveEvent): boolean {
-  const targetEl = event.relatedContext.element;
-
-  const oldTarget = document.querySelector('.drop-target');
-  if (oldTarget && oldTarget.id !== targetEl?.id) {
-    oldTarget.classList.remove('drop-target');
-    dropTargetId.value = null;
-  }
-
-  if (targetEl && isLayerGroup(targetEl) && !targetEl.expanded) {
-    event.related.classList.add('drop-target');
-    dropTargetId.value = targetEl.id;
-    return false;
-  }
-
-  return true;
-}
-
-function onEnd(event: DndEndEvent) {
-  const oldTarget = document.querySelector('.drop-target');
-  if (oldTarget) {
-    oldTarget.classList.remove('drop-target');
-  }
-
-  if (dropTargetId.value && event.oldIndex !== undefined) {
-    const sourceGroup = props.group.value;
-    const draggedItem = sourceGroup.layers[event.oldIndex];
-
-    if (draggedItem && isLayerGroup(draggedItem) && draggedItem.id === dropTargetId.value) {
-      dropTargetId.value = null;
-      return;
-    }
-
-    const findAndMove = (currentGroup: LayerGroup): LayerGroup => {
-      const targetGroup = currentGroup.layers.find(
-        (l) => l.id === dropTargetId.value,
-      ) as LayerGroup;
-
-      if (targetGroup && isLayerGroup(targetGroup)) {
-        const newSourceLayers = sourceGroup.layers.filter((l) => l.id !== draggedItem.id);
-        targetGroup.layers.unshift(draggedItem);
-        return {
-          ...sourceGroup,
-          layers: newSourceLayers.map((l) => (l.id === targetGroup.id ? targetGroup : l)),
-        };
-      } else {
-        return {
-          ...currentGroup,
-          layers: currentGroup.layers.map((l) => (isLayerGroup(l) ? findAndMove(l) : l)),
-        };
-      }
-    };
-
-    const newGroup = findAndMove(sourceGroup);
-    emit('updateGroup', newGroup);
-  }
-
-  dropTargetId.value = null;
-}
 
 function updateLayer(layer: Layer) {
   if (!props.group.value) return;
@@ -152,6 +72,38 @@ const finishEditing = (e: KeyboardEvent) => {
     (e.target as HTMLElement).blur();
   }
 };
+
+function getLayerDepth(
+  layer: Layer | LayerGroup,
+  currentGroup: LayerGroup,
+  currentDepth: number = 0,
+): number {
+  if (currentGroup.layers.some((l) => l.id === layer.id)) {
+    return currentDepth;
+  }
+
+  for (const l of currentGroup.layers) {
+    if (isLayerGroup(l)) {
+      const foundDepth = getLayerDepth(layer, l, currentDepth + 1);
+      if (foundDepth !== -1) return foundDepth;
+    }
+  }
+  return -1;
+}
+
+function onChange() {
+  // This fires during drag operations, causing reactive updates.
+  // Necessary for previewing dragget items.
+}
+
+function onDragOver(e: DragEvent) {
+  // Stop the event from bubbling up to parent draggable components.
+  // This ensures only the deepest nested list handles the event.
+  e.stopPropagation();
+  // When dragging over this list, update the ghost depth to match this list's depth.
+  // The ghost's padding should be based on the depth of the list it's being dropped into.
+  ghostDepth.value = props.depth;
+}
 </script>
 
 <template>
@@ -160,17 +112,22 @@ const finishEditing = (e: KeyboardEvent) => {
     :list="group.value.layers"
     item-key="id"
     :group="{ name: 'layers' }"
-    :move="onMove"
-    @end="onEnd"
+    @change="onChange"
+    ghost-class="ghost"
+    :style="{ '--ghost-depth': ghostDepth }"
+    @dragover.prevent="onDragOver"
   >
     <template #item="{ element }: { element: LayerGroup | Layer }">
       <div
         :id="element.id"
-        class="flex flex-col w-full layer-item"
+        class="flex flex-col w-full layer-item py-0.5"
         :class="[element.selected ? 'selected-layer' : '', element.expanded ? 'has-sublayers' : '']"
         @click.stop="$emit('selectLayer', element.id)"
       >
-        <div class="flex flex-col w-full" :class="`pl-${depth * 4}`">
+        <div
+          class="flex flex-col w-full"
+          :class="`pl-${getLayerDepth(element, props.group.value, props.depth) * 4}`"
+        >
           <div class="flex flex-row gap-4">
             <button class="cursor-pointer" @click.stop="toggleExpansion(element)">
               <ChevronDownIcon
@@ -210,6 +167,13 @@ const finishEditing = (e: KeyboardEvent) => {
 </template>
 
 <style scoped>
+.ghost {
+  background: #4a4a4a;
+  opacity: 0.5;
+  /* Use the CSS variable for padding */
+  padding-left: calc(var(--ghost-depth) * 1rem); /* 1rem = pl-4 in tailwind */
+}
+
 .drop-target {
   background-color: #4a4a4a;
   border: 1px dashed #ffffff;
