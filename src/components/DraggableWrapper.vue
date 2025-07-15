@@ -104,6 +104,19 @@ function onDragOver(e: DragEvent) {
   // The ghost's padding should be based on the depth of the list it's being dropped into.
   ghostDepth.value = props.depth;
 }
+function fixGhostImage(dataTransfer: DataTransfer, dragEl: HTMLElement) {
+  const ghostImage = document.createElement('div');
+  ghostImage.id = 'ghost-image';
+  ghostImage.className = 'ghost-image';
+  const h3 = dragEl.querySelector('h3');
+  ghostImage.innerHTML =
+    '<div class="some-class"><h3>' + (h3 ? h3.textContent : '') + '</h3></div>';
+  ghostImage.style.position = 'absolute';
+  ghostImage.style.top = '-1000px';
+  ghostImage.style.width = dragEl.getBoundingClientRect().width + 'px';
+  document.body.appendChild(ghostImage);
+  dataTransfer.setDragImage(ghostImage, 30, 20);
+}
 </script>
 
 <template>
@@ -112,6 +125,7 @@ function onDragOver(e: DragEvent) {
     :list="group.value.layers"
     item-key="id"
     :group="{ name: 'layers' }"
+    :setData="fixGhostImage"
     @change="onChange"
     ghost-class="ghost"
     :style="{ '--ghost-depth': ghostDepth }"
