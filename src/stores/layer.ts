@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { defaultParentGroup, defaultLayer, defaultLayerGroup } from '@/lib';
 import type { LayerGroup } from '@/lib';
+import { deselectAll } from '@/lib';
 
 export const useLayerStore = defineStore('layer', {
   state: () => ({
@@ -26,19 +27,27 @@ export const useLayerStore = defineStore('layer', {
       }
     },
     selectLayer(id: string): void {
-      if (this.parentGroup) {
-        const searchLayers = (layers: LayerGroup['layers']) => {
-          for (const layer of layers) {
-            layer.selected = false;
-            if (layer.id === id) {
-              layer.selected = true;
-            } else if ('layers' in layer) {
-              searchLayers(layer.layers);
+      if (!this.parentGroup) return;
+      // 1. Deselect all layers first
+      const updatedGroup = deselectAll(this.parentGroup);
+
+      // 2. Then, find and select the new layer
+      const selectInTree = (group: LayerGroup): LayerGroup => {
+        return {
+          ...group,
+          layers: group.layers.map((item) => {
+            if (item.id === id) {
+              return { ...item, selected: true };
             }
-          }
+            if ('layers' in item && item.layers) {
+              return selectInTree(item as LayerGroup);
+            }
+            return item;
+          }),
         };
-        searchLayers(this.parentGroup.layers);
-      }
+      };
+
+      this.parentGroup = selectInTree(updatedGroup);
     },
   },
 });

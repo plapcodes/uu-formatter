@@ -5,6 +5,23 @@ import { uuid } from './uuid';
 export * from './layer';
 export * from './utils';
 
+export function deselectAll(group: LayerGroup): LayerGroup {
+  const deselectRecursively = (layers: (Layer | LayerGroup)[]): (Layer | LayerGroup)[] => {
+    return layers.map((item) => {
+      const newItem = { ...item, selected: false };
+      if ('layers' in newItem && newItem.layers) {
+        newItem.layers = deselectRecursively(newItem.layers);
+      }
+      return newItem;
+    });
+  };
+
+  return {
+    ...group,
+    layers: deselectRecursively(group.layers),
+  };
+}
+
 export const isLayerGroup = (item: unknown): item is LayerGroup => {
   return (
     typeof item === 'object' &&

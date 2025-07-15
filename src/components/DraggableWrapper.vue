@@ -121,12 +121,11 @@ function onDragOver(e: DragEvent) {
       <div
         :id="element.id"
         class="flex flex-col w-full layer-item py-0.5"
-        :class="[element.selected ? 'selected-layer' : '', element.expanded ? 'has-sublayers' : '']"
         @click.stop="$emit('selectLayer', element.id)"
       >
         <div
           class="flex flex-col w-full"
-          :class="`pl-${getLayerDepth(element, props.group.value, props.depth) * 4}`"
+          :class="`pl-${getLayerDepth(element, props.group.value, props.depth) * 4} ${element.selected ? 'selected-layer' : ''} ${element.expanded ? 'has-sublayers' : ''}`"
         >
           <div class="flex flex-row gap-4">
             <button class="cursor-pointer" @click.stop="toggleExpansion(element)">
