@@ -19,7 +19,7 @@ function updateText(event: Event) {
 </script>
 
 <template>
-  <main class="h-full">
+  <main class="flex-1 shrink-0 min-h-0 h-full">
     <ResizablePanelGroup
       id="editor-group"
       direction="horizontal"

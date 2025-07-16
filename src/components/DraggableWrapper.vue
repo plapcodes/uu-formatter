@@ -143,7 +143,7 @@ function fixGhostImage(dataTransfer: DataTransfer, dragEl: HTMLElement) {
     :style="{ '--ghost-depth': ghostDepth }"
     @dragover.prevent="onDragOver"
   >
-    <template #item="{ element, index }: { element: LayerGroup | Layer; index: number }">
+    <template #item="{ element }: { element: LayerGroup | Layer }">
       <div
         :id="element.id"
         class="flex flex-col w-full layer-item py-0.5"
@@ -223,5 +223,6 @@ function fixGhostImage(dataTransfer: DataTransfer, dragEl: HTMLElement) {
 
 .layer-switch {
   margin-left: auto;
+  margin-right: 1rem;
 }
 </style>

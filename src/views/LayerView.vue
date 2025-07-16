@@ -6,6 +6,7 @@ import { onMounted, ref } from 'vue';
 import type { LayerGroup } from '@/lib';
 import Button from '@/components/ui/button/Button.vue';
 import HoverButton from '@/components/HoverButton.vue';
+import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
 
 const layerStore = useLayerStore();
 
@@ -33,8 +34,8 @@ layerStore.$subscribe((mutation, state) => {
 </script>
 
 <template>
-  <div class="layer-view flex flex-col items-center gap-2">
-    <div class="w-full flex justify-between items-center">
+  <div class="layer-view flex flex-col items-center gap-2 h-full max-h-full">
+    <div class="w-full flex justify-between items-center flex-0">
       <h1 class="text-2xl font-bold">Text Processing Layers</h1>
       <div class="flex flex-row gap-4 items-center">
         <HoverButton hint="Add Layer">
@@ -51,7 +52,7 @@ layerStore.$subscribe((mutation, state) => {
       </div>
     </div>
 
-    <div id="layer-list" class="w-full flex-1">
+    <ScrollArea class="w-full flex-1 min-h-0 max-h-full">
       <DraggableWrapper
         v-if="layerStore.parentGroup !== null"
         :group="ref(layerStore.parentGroup)"
@@ -59,6 +60,6 @@ layerStore.$subscribe((mutation, state) => {
         @update-group="updateParentGroup"
         @selectLayer="layerStore.selectLayer"
       />
-    </div>
+    </ScrollArea>
   </div>
 </template>

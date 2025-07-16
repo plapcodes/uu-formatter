@@ -4,7 +4,7 @@ import TheHeader from '@/components/TheHeader.vue';
 </script>
 
 <template>
-  <TheHeader class="flex-0" />
+  <TheHeader class="flex-none" />
 
   <RouterView class="flex" />
 </template>
