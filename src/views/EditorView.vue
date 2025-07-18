@@ -14,7 +14,7 @@ import { useColorMode } from '@vueuse/core';
 
 const input = ref('');
 const output = ref('');
-const { text, copy } = useClipboard({ source: output.value, legacy: true });
+const { copy } = useClipboard({ source: output.value, legacy: true });
 const textInput = ref<HTMLElement | null>(null);
 const textOutput = ref<HTMLElement | null>(null);
 const mode = useColorMode();
