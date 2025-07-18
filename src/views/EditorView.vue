@@ -14,6 +14,7 @@ import { useColorMode } from '@vueuse/core';
 
 const input = ref('');
 const output = ref('');
+const expandedInput = ref(false);
 const { copy } = useClipboard({ source: output.value, legacy: true });
 const textInput = ref<HTMLElement | null>(null);
 const textOutput = ref<HTMLElement | null>(null);
@@ -48,13 +49,23 @@ function handleCopy() {
           <div class="textbox">
             <div class="absolute right-3 top-3 flex gap-2">
               <HoverButton hint="Contract">
-                <Button variant="outline" size="icon">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  :class="expandedInput ? '' : 'hidden'"
+                  @click="expandedInput = false"
+                >
                   <Icon icon="heroicons:arrows-pointing-in" />
                 </Button>
               </HoverButton>
 
               <HoverButton hint="Expand">
-                <Button variant="outline" size="icon">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  :class="expandedInput ? 'hidden' : ''"
+                  @click="expandedInput = true"
+                >
                   <Icon icon="heroicons:arrows-pointing-out" />
                 </Button>
               </HoverButton>
@@ -69,7 +80,7 @@ function handleCopy() {
             />
           </div>
 
-          <div class="textbox">
+          <div class="textbox" v-if="!expandedInput">
             <div class="absolute right-3 top-3 flex gap-2">
               <HoverButton hint="Copy to Clipboard">
                 <Button variant="outline" size="icon" @click="handleCopy">
@@ -88,8 +99,12 @@ function handleCopy() {
           </div>
         </div>
       </ResizablePanel>
-      <ResizableHandle with-handle id="editor-handle" />
-      <ResizablePanel id="layer-view-group" class="text-nowrap" :default-size="50"
+      <ResizableHandle with-handle id="editor-handle" :class="expandedInput ? 'hidden' : ''" />
+      <ResizablePanel
+        id="layer-view-group"
+        class="text-nowrap"
+        :default-size="50"
+        :class="expandedInput ? 'hidden' : ''"
         ><LayerView
       /></ResizablePanel>
     </ResizablePanelGroup>
@@ -102,5 +117,9 @@ textarea {
   border: none;
   outline: none;
   height: 100%;
+}
+
+.textbox {
+  transition: all 0.3s ease;
 }
 </style>
