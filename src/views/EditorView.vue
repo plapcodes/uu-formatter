@@ -7,19 +7,37 @@ import { Icon } from '@iconify/vue';
 import ResizablePanelGroup from '@/components/ui/resizable/ResizablePanelGroup.vue';
 import ResizableHandle from '@/components/ui/resizable/ResizableHandle.vue';
 import ResizablePanel from '@/components/ui/resizable/ResizablePanel.vue';
+import { useClipboard } from '@vueuse/core';
+import { toast, Toaster } from 'vue-sonner';
+import 'vue-sonner/style.css';
+import { useColorMode } from '@vueuse/core';
 
 const input = ref('');
+const output = ref('');
+const { text, copy } = useClipboard({ source: output.value, legacy: true });
 const textInput = ref<HTMLElement | null>(null);
 const textOutput = ref<HTMLElement | null>(null);
+const mode = useColorMode();
 
 function updateText(event: Event) {
   const target = event.target as HTMLInputElement;
   input.value = target.value;
+  output.value = input.value;
+}
+
+function handleCopy() {
+  if (output.value) {
+    copy(output.value);
+    toast('Copied to clipboard!', {
+      description: 'The text has been copied successfully.',
+    });
+  }
 }
 </script>
 
 <template>
   <main class="flex-1 shrink-0 min-h-0 h-full">
+    <Toaster position="bottom-right" :theme="mode == 'auto' ? 'system' : mode" />
     <ResizablePanelGroup
       id="editor-group"
       direction="horizontal"
@@ -54,7 +72,7 @@ function updateText(event: Event) {
           <div class="textbox">
             <div class="absolute right-3 top-3 flex gap-2">
               <HoverButton hint="Copy to Clipboard">
-                <Button variant="outline" size="icon">
+                <Button variant="outline" size="icon" @click="handleCopy">
                   <Icon icon="heroicons:clipboard" />
                 </Button>
               </HoverButton>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 defineProps<{
   hint: string;
@@ -7,12 +7,14 @@ defineProps<{
 </script>
 
 <template>
-  <HoverCard>
-    <HoverCardTrigger as-child>
-      <slot></slot>
-    </HoverCardTrigger>
-    <HoverCardContent class="w-min">
-      <div class="text-nowrap text-center">{{ hint }}</div>
-    </HoverCardContent>
-  </HoverCard>
+  <TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger as-child>
+        <slot></slot>
+      </TooltipTrigger>
+      <TooltipContent class="w-min">
+        <p class="text-nowrap text-center">{{ hint }}</p>
+      </TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
 </template>
