@@ -11,6 +11,7 @@ export interface ISelector {
    * @returns An array of ranges, where each range is represented as [start, end].
    */
   select(text: string): number[][];
+  readonly config: SelectorConfig;
 }
 
 export type SelectorConfig = SelectorEntireConfig;

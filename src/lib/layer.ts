@@ -16,8 +16,9 @@ export interface Layer {
   enabled: boolean;
   expanded: boolean;
   selected: boolean;
-  activator: IActivator;
+  layerActivator: IActivator;
   selector: ISelector;
+  selectionActivator: IActivator;
   transformer: ITransformer;
 }
 
@@ -27,8 +28,9 @@ export interface LayerConfig {
   description?: string;
   enabled: boolean;
   expanded: boolean;
-  activator: ActivatorConfig;
+  layerActivator: ActivatorConfig;
   selector: SelectorConfig;
+  selectionActivator: ActivatorConfig;
   transformer: TransformerConfig;
 }
 
@@ -64,8 +66,9 @@ export function makeLayer(config: LayerConfig): Layer {
     enabled: config.enabled,
     expanded: config.expanded,
     selected: false,
-    activator: createActivator(config.activator),
+    layerActivator: createActivator(config.layerActivator),
     selector: createSelector(config.selector),
+    selectionActivator: createActivator(config.selectionActivator),
     transformer: createTransformer(config.transformer),
   };
 }
@@ -90,6 +93,38 @@ export function makeLayerGroup(config: LayerGroupConfig): LayerGroup {
   };
 }
 
+export function serializeLayer(layer: Layer): LayerConfig {
+  return {
+    id: layer.id,
+    name: layer.name,
+    description: layer.description,
+    enabled: layer.enabled,
+    expanded: layer.expanded,
+    layerActivator: layer.layerActivator.config,
+    selector: layer.selector.config,
+    selectionActivator: layer.selectionActivator.config,
+    transformer: layer.transformer.config,
+  };
+}
+
+export function serializeLayerGroup(group: LayerGroup): LayerGroupConfig {
+  const layers = group.layers.map((layer) => {
+    if ('layers' in layer) {
+      return serializeLayerGroup(layer);
+    } else {
+      return serializeLayer(layer);
+    }
+  });
+  return {
+    id: group.id,
+    name: group.name,
+    description: group.description,
+    expanded: group.expanded,
+    enabled: group.enabled,
+    layers: layers,
+  };
+}
+
 export function processLayers(parentGroup: LayerGroup, text: string): string {
   let processedText = text;
 
@@ -99,9 +134,14 @@ export function processLayers(parentGroup: LayerGroup, text: string): string {
       processedText = processLayers(layer, processedText);
     } else {
       // Apply the layer's activator, selector, and transformer.
-      if (layer.activator.isActive(processedText)) {
+      if (layer.layerActivator.isActive(processedText)) {
         const ranges = layer.selector.select(processedText);
-        processedText = layer.transformer.transform(processedText, ranges);
+        for (const range of ranges) {
+          const text = processedText.slice(range[0], range[1]);
+          if (layer.selectionActivator.isActive(text)) {
+            processedText = layer.transformer.transform(text);
+          }
+        }
       }
     }
   }

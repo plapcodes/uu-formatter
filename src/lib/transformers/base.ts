@@ -8,10 +8,11 @@ export interface ITransformer {
   /**
    * Transforms the given text based on the specified ranges.
    * @param text The text to be transformed.
-   * @param ranges An array of ranges, where each range is represented as [start, end].
+   * @param ranges A range of text to be transformed, represented as [start, end].
    * @returns The transformed text.
    */
-  transform(text: string, ranges: number[][]): string;
+  transform(text: string): string;
+  readonly config: TransformerConfig;
 }
 
 export type TransformerConfig = TransformerRemapConfig;

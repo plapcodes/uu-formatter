@@ -8,9 +8,9 @@ export interface ActivatorAlwaysConfig {
 }
 
 export class AlwaysActivator implements IActivator {
-  constructor(private readonly options: ActivatorAlwaysConfig['options']) {}
+  constructor(readonly config: ActivatorAlwaysConfig) {}
 
   public isActive(text: string): boolean {
-    return this.options.enabled;
+    return this.config.options.enabled;
   }
 }

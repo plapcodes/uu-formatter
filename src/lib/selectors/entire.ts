@@ -2,10 +2,11 @@ import type { ISelector } from './base';
 
 export interface SelectorEntireConfig {
   type: 'ENTIRE';
+  options: null;
 }
 
 export class EntireSelector implements ISelector {
-  constructor(private readonly config: SelectorEntireConfig) {}
+  constructor(readonly config: SelectorEntireConfig) {}
 
   public select(text: string): number[][] {
     // Select the entire text as a single range

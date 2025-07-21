@@ -11,19 +11,21 @@ import { useClipboard } from '@vueuse/core';
 import { toast, Toaster } from 'vue-sonner';
 import 'vue-sonner/style.css';
 import { useColorMode } from '@vueuse/core';
+import { useLayerStore } from '@/stores/layer';
+import { processLayers } from '@/lib';
 
 const input = ref('');
 const output = ref('');
 const expandedInput = ref(false);
 const { copy } = useClipboard({ source: output.value, legacy: true });
-const textInput = ref<HTMLElement | null>(null);
-const textOutput = ref<HTMLElement | null>(null);
 const mode = useColorMode();
 
-function updateText(event: Event) {
-  const target = event.target as HTMLInputElement;
-  input.value = target.value;
-  output.value = input.value;
+const layerStore = useLayerStore();
+
+function updateText() {
+  if (layerStore.parentGroup) {
+    output.value = processLayers(layerStore.parentGroup, input.value);
+  }
 }
 
 function handleCopy() {
@@ -34,6 +36,10 @@ function handleCopy() {
     });
   }
 }
+
+layerStore.$subscribe(() => {
+  updateText();
+});
 </script>
 
 <template>
@@ -71,12 +77,11 @@ function handleCopy() {
               </HoverButton>
             </div>
             <textarea
-              ref="textInput"
               id="text-input"
               class="w-full h-full"
               type="text"
-              :value="input"
-              @input="(event) => updateText(event)"
+              v-model="input"
+              @input="updateText"
             />
           </div>
 
@@ -89,11 +94,10 @@ function handleCopy() {
               </HoverButton>
             </div>
             <textarea
-              ref="textOutput"
               id="text-output"
               class="w-full h-full bg-secondary"
               type="text"
-              :value="input"
+              :value="output"
               readonly
             />
           </div>
@@ -117,9 +121,5 @@ textarea {
   border: none;
   outline: none;
   height: 100%;
-}
-
-.textbox {
-  transition: all 0.3s ease;
 }
 </style>

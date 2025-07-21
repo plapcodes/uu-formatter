@@ -10,6 +10,7 @@ export interface IActivator {
    * @returns True if the activator is active, false otherwise.
    */
   isActive(text: string): boolean;
+  readonly config: ActivatorConfig;
 }
 
 export type ActivatorConfig = ActivatorAlwaysConfig;
@@ -17,7 +18,7 @@ export type ActivatorConfig = ActivatorAlwaysConfig;
 export function createActivator(config: ActivatorConfig): IActivator {
   switch (config.type) {
     case 'ALWAYS':
-      return new AlwaysActivator(config.options);
+      return new AlwaysActivator(config);
     default:
       throw new Error(`Unknown activator type: ${config.type}`);
   }

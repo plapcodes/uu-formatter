@@ -1,5 +1,11 @@
-import { defineStore } from 'pinia';
-import { defaultParentGroup, defaultLayer, defaultLayerGroup } from '@/lib';
+import { defineStore, type StateTree } from 'pinia';
+import {
+  defaultParentGroup,
+  defaultLayer,
+  defaultLayerGroup,
+  serializeLayerGroup,
+  makeLayerGroup,
+} from '@/lib';
 import type { LayerGroup } from '@/lib';
 import { deselectAll } from '@/lib';
 
@@ -7,7 +13,26 @@ export const useLayerStore = defineStore('layer', {
   state: () => ({
     parentGroup: null as LayerGroup | null,
   }),
-  persist: true,
+  persist: {
+    storage: localStorage,
+    key: 'editor-layer',
+    serializer: {
+      serialize: (value: StateTree) => {
+        const parentGroup = (value as { parentGroup: LayerGroup | null }).parentGroup;
+        const serialized = JSON.stringify({
+          parentGroup: parentGroup ? serializeLayerGroup(parentGroup) : null,
+        });
+        console.log('Serialized layer store:', serialized);
+        return serialized;
+      },
+      deserialize: (value: string) => {
+        const parsed = JSON.parse(value);
+        return {
+          parentGroup: parsed.parentGroup ? makeLayerGroup(parsed.parentGroup) : null,
+        };
+      },
+    },
+  },
   actions: {
     initializeParentGroup() {
       if (this.parentGroup === null) {
