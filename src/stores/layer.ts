@@ -22,7 +22,6 @@ export const useLayerStore = defineStore('layer', {
         const serialized = JSON.stringify({
           parentGroup: parentGroup ? serializeLayerGroup(parentGroup) : null,
         });
-        console.log('Serialized layer store:', serialized);
         return serialized;
       },
       deserialize: (value: string) => {

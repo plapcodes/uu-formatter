@@ -45,11 +45,7 @@ layerStore.$subscribe(() => {
 <template>
   <main class="flex-1 shrink-0 min-h-0 h-full">
     <Toaster position="bottom-right" :theme="mode == 'auto' ? 'system' : mode" />
-    <ResizablePanelGroup
-      id="editor-group"
-      direction="horizontal"
-      class="h-full w-full px-4 pb-4 gap-3"
-    >
+    <ResizablePanelGroup id="editor-group" direction="horizontal" class="h-full w-full gap-3">
       <ResizablePanel id="layer-view-text" :default-size="50">
         <div class="flex flex-col items-center justify-center h-full gap-4">
           <div class="textbox">
