@@ -29,6 +29,14 @@ import { Icon } from '@iconify/vue';
               </RouterLink>
             </SidebarMenuItem>
             <SidebarMenuItem>
+              <RouterLink to="/settings">
+                <SidebarMenuButton tooltip="Settings">
+                  <Icon icon="heroicons:cog-6-tooth" />
+                  <span>Settings</span>
+                </SidebarMenuButton>
+              </RouterLink>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
               <RouterLink to="/about">
                 <SidebarMenuButton tooltip="About">
                   <Icon icon="heroicons:at-symbol" />
@@ -41,12 +49,12 @@ import { Icon } from '@iconify/vue';
       </SidebarGroup>
     </SidebarContent>
     <SidebarFooter>
-      <a href="https://github.com/plapcodes/uu-formatter" target="_blank">
-        <SidebarMenuButton tooltip="Source Code">
+      <SidebarMenuButton tooltip="Source Code" as-child>
+        <a href="https://github.com/plapcodes/uu-formatter" target="_blank">
           <Icon icon="mdi:github" />
           <span>Source Code</span>
-        </SidebarMenuButton>
-      </a>
+        </a>
+      </SidebarMenuButton>
     </SidebarFooter>
   </Sidebar>
 </template>
