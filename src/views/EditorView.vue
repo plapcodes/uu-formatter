@@ -13,6 +13,8 @@ import 'vue-sonner/style.css';
 import { useColorMode } from '@vueuse/core';
 import { useLayerStore } from '@/stores/layer';
 import { processLayers } from '@/lib';
+import Textarea from '@/components/ui/textarea/Textarea.vue';
+import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
 
 const input = ref('');
 const output = ref('');
@@ -47,12 +49,12 @@ layerStore.$subscribe(() => {
     <Toaster position="bottom-right" :theme="mode == 'auto' ? 'system' : mode" />
     <ResizablePanelGroup id="editor-group" direction="horizontal" class="h-full w-full gap-3">
       <ResizablePanel id="layer-view-text" :default-size="50">
-        <div class="flex flex-col items-center justify-center h-full gap-4">
-          <div class="textbox">
-            <div class="absolute right-3 top-3 flex gap-2">
+        <div class="flex flex-col items-center h-full gap-4">
+          <div class="textbox flex-1">
+            <div class="absolute right-4 top-4 flex gap-2 z-10">
               <HoverButton hint="Contract">
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="icon"
                   :class="expandedInput ? '' : 'hidden'"
                   @click="expandedInput = false"
@@ -63,7 +65,7 @@ layerStore.$subscribe(() => {
 
               <HoverButton hint="Expand">
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="icon"
                   :class="expandedInput ? 'hidden' : ''"
                   @click="expandedInput = true"
@@ -72,30 +74,32 @@ layerStore.$subscribe(() => {
                 </Button>
               </HoverButton>
             </div>
-            <textarea
+            <Textarea
               id="text-input"
-              class="w-full h-full"
+              class="w-full h-full resize-none overflow-auto"
               type="text"
               v-model="input"
               @input="updateText"
             />
           </div>
 
-          <div class="textbox" v-if="!expandedInput">
-            <div class="absolute right-3 top-3 flex gap-2">
+          <div class="textbox flex-1" v-if="!expandedInput">
+            <div class="absolute right-4 top-4 flex gap-2 z-10">
               <HoverButton hint="Copy to Clipboard">
-                <Button variant="outline" size="icon" @click="handleCopy">
+                <Button variant="ghost" size="icon" @click="handleCopy">
                   <Icon icon="heroicons:clipboard" />
                 </Button>
               </HoverButton>
             </div>
-            <textarea
-              id="text-output"
-              class="w-full h-full bg-secondary"
-              type="text"
-              :value="output"
-              readonly
-            />
+            <ScrollArea class="h-full" child>
+              <Textarea
+                id="text-output"
+                type="text"
+                :value="output"
+                readonly
+                class="w-full h-full resize-none overflow-auto"
+              />
+            </ScrollArea>
           </div>
         </div>
       </ResizablePanel>
@@ -113,9 +117,21 @@ layerStore.$subscribe(() => {
 
 <style lang="css" scoped>
 textarea {
+  padding: 0.5rem;
+  margin: 0;
   resize: none;
   border: none;
   outline: none;
+  max-height: 150px;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+.textbox {
+  position: relative;
+  width: 100%;
   height: 100%;
+  overflow: hidden;
+  min-height: 0;
 }
 </style>

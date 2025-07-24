@@ -120,7 +120,7 @@ body {
 }
 
 .textbox {
-  @apply w-full h-auto border-2 bg-muted rounded-lg relative flex-auto flex flex-col p-2;
+  @apply w-full h-auto rounded-lg relative flex-auto flex flex-col p-2;
   border-color: var(--color-border);
 }
 
@@ -135,4 +135,25 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+:-webkit-scrollbar {
+  @apply w-2.5 h-2.5;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-border border-[1px] border-transparent border-solid bg-clip-padding;
+}
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(38, 38, 42) transparent;
+  scrollbar-gutter: stable;
+  scroll-behavior: smooth;
+  scroll-margin: 0;
+  scroll-padding: 0;
 }
