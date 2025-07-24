@@ -91,15 +91,13 @@ layerStore.$subscribe(() => {
                 </Button>
               </HoverButton>
             </div>
-            <ScrollArea class="h-full" child>
-              <Textarea
-                id="text-output"
-                type="text"
-                :value="output"
-                readonly
-                class="w-full h-full resize-none overflow-auto"
-              />
-            </ScrollArea>
+            <Textarea
+              id="text-output"
+              type="text"
+              :value="output"
+              readonly
+              class="w-full h-full resize-none overflow-auto"
+            />
           </div>
         </div>
       </ResizablePanel>
