@@ -1,17 +1,27 @@
 export interface TransformerRemapConfig {
   type: 'REMAP';
   options: {
-    remap: Record<string, string>;
+    remap: string[][];
   };
 }
 
 export class TransformerRemap {
-  constructor(private readonly config: TransformerRemapConfig) {}
+  constructor(readonly config: TransformerRemapConfig) {}
 
   public transform(text: string): string {
-    return Object.entries(this.config.options.remap).reduce(
-      (acc, [key, value]) => acc.replace(new RegExp(key, 'g'), value),
-      text,
-    );
+    const remap = this.config.options.remap;
+    let transformedText = text;
+
+    // Escape special regex characters in 'from'
+    function escapeRegExp(str: string): string {
+      return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    for (const [from, to] of remap) {
+      const regex = new RegExp(escapeRegExp(from), 'g');
+      transformedText = transformedText.replace(regex, to);
+    }
+
+    return transformedText;
   }
 }

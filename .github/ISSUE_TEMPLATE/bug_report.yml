@@ -1,0 +1,64 @@
+name: Bug Report
+description: App does not work as described.
+labels: ['Type: Bug']
+body:
+  - type: input
+    attributes:
+      label: App Version
+      description: Version used when the bug occured (can be found on the bottom of the app, on all pages).
+      placeholder: 0.1.0
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Functionality Affected
+      description: What functionality is not working as expected? If the bug affects multiple functionalities, please list them all.
+      placeholder: ...
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Describe the Bug
+      description: How the app behaves instead of the expected behavior.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Expected Behavior
+      description: How the app is expected to behave.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: What to do in order to reproduce this issue.
+      placeholder: |
+        Step 1: ..
+        Step 2: ..
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Additional info
+      description: Anything else you want to provide that will help in resolving the issue faster, such as screenshots or videos.
+    validations:
+      required: false
+
+  - type: checkboxes
+    attributes:
+      label: Checklist
+      description: Let's make sure this report is valid!
+      options:
+        - label: I am running latest version of the app.
+          required: true
+        - label: I have (at least cursorily) searched for similar issues.
+          required: true
+        - label: I ticked all of the boxes without actually reading them.
+          required: false
+        - label: I am willing to cooperate to get this issue resolved faster, including providing any additional information requested or testing new builds.
+          required: true

@@ -1,80 +1,136 @@
 <script setup lang="ts">
 import LayerView from './LayerView.vue';
-import AnimatedButton from '@/components/AnimatedButton.vue';
-import ExpandingButton from '@/components/ExpandingButton.vue';
-
+import Button from '@/components/ui/button/Button.vue';
+import HoverButton from '@/components/HoverButton.vue';
 import { ref } from 'vue';
-import {
-  ClipboardIcon,
-  ArrowsPointingOutIcon,
-  ArrowsPointingInIcon,
-} from '@heroicons/vue/24/outline';
+import { Icon } from '@iconify/vue';
+import ResizablePanelGroup from '@/components/ui/resizable/ResizablePanelGroup.vue';
+import ResizableHandle from '@/components/ui/resizable/ResizableHandle.vue';
+import ResizablePanel from '@/components/ui/resizable/ResizablePanel.vue';
+import { useClipboard } from '@vueuse/core';
+import { toast, Toaster } from 'vue-sonner';
+import 'vue-sonner/style.css';
+import { useColorMode } from '@vueuse/core';
+import { useLayerStore } from '@/stores/layer';
+import { processLayers } from '@/lib';
+import Textarea from '@/components/ui/textarea/Textarea.vue';
 
 const input = ref('');
-const parentContainer = ref<HTMLElement | null>(null);
-const textInput = ref<HTMLElement | null>(null);
-const textOutput = ref<HTMLElement | null>(null);
+const output = ref('');
+const expandedInput = ref(false);
+const { copy } = useClipboard({ source: output.value, legacy: true });
+const mode = useColorMode();
 
-function updateText(event: Event) {
-  const target = event.target as HTMLInputElement;
-  input.value = target.value;
+const layerStore = useLayerStore();
+
+function updateText() {
+  if (layerStore.parentGroup) {
+    output.value = processLayers(layerStore.parentGroup, input.value);
+  }
 }
+
+function handleCopy() {
+  if (output.value) {
+    copy(output.value);
+    toast('Copied to clipboard!', {
+      description: 'The text has been copied successfully.',
+    });
+  }
+}
+
+layerStore.$subscribe(() => {
+  updateText();
+});
 </script>
 
 <template>
-  <main class="h-full">
-    <div ref="parentContainer" class="flex flex-row w-full h-full pb-4 gap-4">
-      <div class="flex flex-col items-center justify-center h-auto w-1/2 gap-4 pl-6">
-        <div class="w-full border-2 border-gray-300 rounded-lg relative flex-1">
-          <div class="absolute right-3 top-3 flex gap-2">
-            <ExpandingButton text="Contract">
-              <template #icon>
-                <ArrowsPointingInIcon class="w-7 h-7" />
-              </template>
-            </ExpandingButton>
-            <ExpandingButton text="Expand">
-              <template #icon>
-                <ArrowsPointingOutIcon class="w-6 h-6" />
-              </template>
-            </ExpandingButton>
-          </div>
-          <textarea
-            ref="textInput"
-            id="text-input"
-            class="w-full h-full"
-            type="text"
-            :value="input"
-            @input="(event) => updateText(event)"
-          />
-        </div>
-        <div class="flex flex-row justify-between w-full flex-none">
-          <AnimatedButton text="Copy to Clipboard" background-color="bg-green-500">
-            <template #icon>
-              <ClipboardIcon class="w-6 h-6" />
-            </template>
-          </AnimatedButton>
-        </div>
-        <div class="w-full border-2 border-gray-300 rounded-lg relative flex-1">
-          <textarea
-            ref="textOutput"
-            id="text-output"
-            class="w-full h-full"
-            type="text"
-            :value="input"
-            readonly
-          />
-        </div>
-      </div>
+  <main class="flex-1 shrink-0 min-h-0 h-full">
+    <Toaster position="bottom-right" :theme="mode == 'auto' ? 'system' : mode" />
+    <ResizablePanelGroup id="editor-group" direction="horizontal" class="h-full w-full gap-3">
+      <ResizablePanel id="layer-view-text" :default-size="50">
+        <div class="flex flex-col items-center h-full gap-4">
+          <div class="textbox flex-1">
+            <div class="absolute right-4 top-4 flex items-center gap-2 z-10">
+              <span class="text-sm text-muted-foreground select-none">INPUT</span>
+              <HoverButton hint="Contract">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  :class="expandedInput ? '' : 'hidden'"
+                  @click="expandedInput = false"
+                >
+                  <Icon icon="heroicons:arrows-pointing-in" />
+                </Button>
+              </HoverButton>
 
-      <LayerView />
-    </div>
+              <HoverButton hint="Expand">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  :class="expandedInput ? 'hidden' : ''"
+                  @click="expandedInput = true"
+                >
+                  <Icon icon="heroicons:arrows-pointing-out" />
+                </Button>
+              </HoverButton>
+            </div>
+            <Textarea
+              id="text-input"
+              class="w-full h-full resize-none overflow-auto"
+              type="text"
+              v-model="input"
+              @input="updateText"
+            />
+          </div>
+
+          <div class="textbox flex-1" v-if="!expandedInput">
+            <div class="absolute right-4 top-4 flex items-center gap-2 z-10">
+              <span class="text-sm text-muted-foreground select-none">OUTPUT</span>
+              <HoverButton hint="Copy to Clipboard">
+                <Button variant="ghost" size="icon" @click="handleCopy">
+                  <Icon icon="heroicons:clipboard" />
+                </Button>
+              </HoverButton>
+            </div>
+            <Textarea
+              id="text-output"
+              type="text"
+              :value="output"
+              readonly
+              class="w-full h-full resize-none overflow-auto"
+            />
+          </div>
+        </div>
+      </ResizablePanel>
+      <ResizableHandle with-handle id="editor-handle" :class="expandedInput ? 'hidden' : ''" />
+      <ResizablePanel
+        id="layer-view-group"
+        class="text-nowrap"
+        :default-size="50"
+        :class="expandedInput ? 'hidden' : ''"
+        ><LayerView
+      /></ResizablePanel>
+    </ResizablePanelGroup>
   </main>
 </template>
 
 <style lang="css" scoped>
 textarea {
+  padding: 0.5rem;
+  margin: 0;
   resize: none;
   border: none;
   outline: none;
+  max-height: 150px;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+.textbox {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  min-height: 0;
 }
 </style>

@@ -20,15 +20,13 @@ export const TRANSFORMER_MANIFEST: TransformerMetadata[] = [
         key: 'remap',
         name: 'Map',
         description: 'A mapping of original text to new text.',
-        controlType: 'doubleText',
+        controlType: 'arbitraryLengthDoubleText',
       },
     ],
     getDefaultConfig: () => ({
       type: 'REMAP',
       options: {
-        remap: {
-          '': '', // Default empty mapping
-        },
+        remap: [['', '']], // Default to an empty remap
       },
     }),
   },

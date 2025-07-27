@@ -18,6 +18,7 @@ export const SELECTOR_MANIFEST: SelectorMetadata[] = [
     parameters: [],
     getDefaultConfig: () => ({
       type: 'ENTIRE',
+      options: null,
     }),
   },
 ];
