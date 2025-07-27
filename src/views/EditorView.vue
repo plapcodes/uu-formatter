@@ -14,7 +14,6 @@ import { useColorMode } from '@vueuse/core';
 import { useLayerStore } from '@/stores/layer';
 import { processLayers } from '@/lib';
 import Textarea from '@/components/ui/textarea/Textarea.vue';
-import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
 
 const input = ref('');
 const output = ref('');
@@ -51,7 +50,8 @@ layerStore.$subscribe(() => {
       <ResizablePanel id="layer-view-text" :default-size="50">
         <div class="flex flex-col items-center h-full gap-4">
           <div class="textbox flex-1">
-            <div class="absolute right-4 top-4 flex gap-2 z-10">
+            <div class="absolute right-4 top-4 flex items-center gap-2 z-10">
+              <span class="text-sm text-muted-foreground select-none">INPUT</span>
               <HoverButton hint="Contract">
                 <Button
                   variant="ghost"
@@ -84,7 +84,8 @@ layerStore.$subscribe(() => {
           </div>
 
           <div class="textbox flex-1" v-if="!expandedInput">
-            <div class="absolute right-4 top-4 flex gap-2 z-10">
+            <div class="absolute right-4 top-4 flex items-center gap-2 z-10">
+              <span class="text-sm text-muted-foreground select-none">OUTPUT</span>
               <HoverButton hint="Copy to Clipboard">
                 <Button variant="ghost" size="icon" @click="handleCopy">
                   <Icon icon="heroicons:clipboard" />
