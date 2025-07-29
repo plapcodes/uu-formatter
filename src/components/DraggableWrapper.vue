@@ -7,6 +7,17 @@ import { Icon } from '@iconify/vue';
 import { isLayerGroup } from '@/lib';
 import draggableComponent from 'vuedraggable';
 import Switch from '@/components/ui/switch/Switch.vue';
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+  ContextMenuSeparator,
+} from '@/components/ui/context-menu';
+import { useLayerStore } from '@/stores/layer';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+
+const layerStore = useLayerStore();
 
 const ghostDepth = ref(0);
 
@@ -18,6 +29,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'updateGroup', group: LayerGroup): void;
   (e: 'selectLayer', id: string): void;
+  (e: 'deleteLayer', id: string): void;
 }>();
 
 function updateLayer(layer: Layer) {
@@ -102,6 +114,12 @@ function getLayerDepth(
   return -1;
 }
 
+function onContextMenuOpen(open: boolean, id: string) {
+  if (open) {
+    emit('selectLayer', id);
+  }
+}
+
 function onChange() {
   // This fires during drag operations, causing reactive updates.
   // Necessary for previewing dragget items.
@@ -144,66 +162,97 @@ function fixGhostImage(dataTransfer: DataTransfer, dragEl: HTMLElement) {
     @dragover.prevent="onDragOver"
   >
     <template #item="{ element }: { element: LayerGroup | Layer }">
-      <div
-        :id="element.id"
-        class="flex flex-col w-full layer-item py-0.5"
-        @click.stop="$emit('selectLayer', element.id)"
-      >
-        <div
-          class="flex flex-col w-full"
-          :class="[
-            `pl-${getLayerDepth(element, props.group.value, props.depth) * 4}`,
-            element.selected ? 'selected-layer' : '',
-            'border-b border-neutral-700',
-          ]"
-        >
-          <div class="flex flex-row gap-4 items-center">
-            <button class="cursor-pointer" @click.stop="toggleExpansion(element)">
-              <Icon
-                icon="heroicons:chevron-down"
-                class="w-4 h-4 text-slate-200"
-                :class="!element.expanded ? 'rotate-270' : ''"
-              />
-            </button>
-            <Icon
-              v-if="isLayerGroup(element)"
-              :icon="`heroicons-folder${element.expanded ? '-open' : ''}-solid`"
-              style="font-size: 18px"
-            />
-            <span
-              class="text-xl"
-              contenteditable="true"
-              @blur="updateName($event, element)"
-              @keydown.enter.prevent="finishEditing"
-              @paste="(e) => handlePaste(e)"
-              >{{ element.name }}</span
-            >
-            <Switch
-              :model-value="element.enabled"
-              @update:model-value="(newValue) => updateElement(element, newValue)"
-              class="ml-auto layer-switch"
-            />
-          </div>
-        </div>
-        <div
-          v-if="isLayerGroup(element) && element.expanded"
-          class="sublayers w-full border-b border-neutral-700"
-        >
-          <DraggableWrapper
-            :group="ref(element)"
-            :depth="depth + 1"
-            @update-group="updateGroup"
-            @select-layer="$emit('selectLayer', $event)"
-          />
-        </div>
-        <div v-else-if="!isLayerGroup(element) && element.expanded" class="sublayers w-full">
-          <TheLayer
-            :layer="ref(element)"
-            @update-layer="updateLayer"
+      <ContextMenu v-on:update:open="(open) => onContextMenuOpen(open, element.id)">
+        <ContextMenuTrigger>
+          <div
+            :id="element.id"
+            class="flex flex-col w-full layer-item py-0.5"
             @click.stop="$emit('selectLayer', element.id)"
-          />
-        </div>
-      </div>
+          >
+            <div
+              class="flex flex-col w-full"
+              :class="[
+                `pl-${getLayerDepth(element, props.group.value, props.depth) * 4}`,
+                element.selected ? 'selected-layer' : '',
+                'border-b border-neutral-700',
+              ]"
+            >
+              <div class="flex flex-row gap-4 items-center">
+                <button class="cursor-pointer" @click.stop="toggleExpansion(element)">
+                  <Icon
+                    icon="heroicons:chevron-down"
+                    class="w-4 h-4 text-slate-200"
+                    :class="!element.expanded ? 'rotate-270' : ''"
+                  />
+                </button>
+                <Icon
+                  v-if="isLayerGroup(element)"
+                  :icon="`heroicons-folder${element.expanded ? '-open' : ''}-solid`"
+                  style="font-size: 18px"
+                />
+                <span
+                  class="text-xl"
+                  contenteditable="true"
+                  @blur="updateName($event, element)"
+                  @keydown.enter.prevent="finishEditing"
+                  @paste="(e) => handlePaste(e)"
+                  >{{ element.name }}</span
+                >
+                <div class="ml-auto flex flex-row gap-4 items-center">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger as-child>
+                        <Icon v-if="layerStore.isLayerSaved(element)" icon="heroicons:bookmark" />
+                      </TooltipTrigger>
+                      <TooltipContent> Layer is saved </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+
+                  <Switch
+                    :model-value="element.enabled"
+                    @update:model-value="(newValue) => updateElement(element, newValue)"
+                    class="ml-auto layer-switch"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              v-if="isLayerGroup(element) && element.expanded"
+              class="sublayers w-full border-b border-neutral-700"
+            >
+              <DraggableWrapper
+                :group="ref(element)"
+                :depth="depth + 1"
+                @update-group="updateGroup"
+                @select-layer="$emit('selectLayer', $event)"
+                @delete-layer="$emit('deleteLayer', $event)"
+              />
+            </div>
+            <div v-else-if="!isLayerGroup(element) && element.expanded" class="sublayers w-full">
+              <TheLayer
+                :layer="ref(element)"
+                @update-layer="updateLayer"
+                @click.stop="$emit('selectLayer', element.id)"
+              />
+            </div>
+          </div>
+        </ContextMenuTrigger>
+        <ContextMenuContent>
+          <ContextMenuItem
+            v-if="!layerStore.isLayerSaved(element)"
+            @select="layerStore.saveLayer(element)"
+          >
+            Save Layer {{ 'layers' in element ? 'Group' : '' }}</ContextMenuItem
+          >
+          <ContextMenuItem v-else @select="layerStore.deleteSavedLayerByObject(element)"
+            >Unsave Layer {{ 'layers' in element ? 'Group' : '' }}</ContextMenuItem
+          >
+          <ContextMenuSeparator />
+          <ContextMenuItem variant="destructive" @select="$emit('deleteLayer', element.id)"
+            >Delete</ContextMenuItem
+          >
+        </ContextMenuContent>
+      </ContextMenu>
     </template>
   </draggableComponent>
 </template>

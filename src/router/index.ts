@@ -14,6 +14,11 @@ const router = createRouter({
       component: () => import('../views/SettingsView.vue'),
     },
     {
+      path: '/savedlayers',
+      name: 'saved layers',
+      component: () => import('../views/SavedLayersView.vue'),
+    },
+    {
       path: '/about',
       name: 'about',
       component: () => import('../views/AboutView.vue'),

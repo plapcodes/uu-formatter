@@ -22,7 +22,7 @@ const mode = useColorMode();
     <Menubar class="border-0">
       <SidebarTrigger />
       <Separator orientation="vertical" />
-      <MenubarMenu>
+      <!--<MenubarMenu>
         <MenubarTrigger>File</MenubarTrigger>
         <MenubarContent>
           <MenubarItem> New Tab <MenubarShortcut>⌘T</MenubarShortcut> </MenubarItem>
@@ -43,7 +43,7 @@ const mode = useColorMode();
           <MenubarSeparator />
           <MenubarItem>Print</MenubarItem>
         </MenubarContent>
-      </MenubarMenu>
+      </MenubarMenu>-->
       <div class="ml-auto flex items-center">
         <Button variant="ghost" @click="mode == 'light' ? (mode = 'dark') : (mode = 'light')">
           <Icon v-if="mode == 'dark'" icon="heroicons-outline:sun" />

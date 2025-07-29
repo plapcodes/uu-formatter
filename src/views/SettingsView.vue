@@ -7,20 +7,17 @@ import Separator from '@/components/ui/separator/Separator.vue';
 import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
 import { Icon } from '@iconify/vue';
+import CenterScreen from '@/components/CenterScreen.vue';
 
 const configStore = useConfigStore();
 const settingsStore = useSettingsStore();
-
-settingsStore.$subscribe((mutation, state) => {
-  console.log('Config store updated:', mutation, state);
-});
 </script>
 
 <template>
   <ScrollArea class="w-full">
-    <div class="flex flex-col w-full items-center">
+    <CenterScreen>
       <Collapsible
-        class="flex flex-col gap-2 items-center w-sm md:w-lg"
+        class="flex flex-col gap-2 items-center"
         v-model:open="settingsStore.sidebarSettings"
       >
         <div class="flex flex-row items-center justify-between w-full">
@@ -47,6 +44,6 @@ settingsStore.$subscribe((mutation, state) => {
           />
         </CollapsibleContent>
       </Collapsible>
-    </div>
+    </CenterScreen>
   </ScrollArea>
 </template>

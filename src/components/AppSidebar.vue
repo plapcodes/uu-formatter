@@ -37,6 +37,14 @@ import { Icon } from '@iconify/vue';
               </RouterLink>
             </SidebarMenuItem>
             <SidebarMenuItem>
+              <RouterLink to="/savedlayers">
+                <SidebarMenuButton tooltip="Saved Layers">
+                  <Icon icon="heroicons:bookmark" />
+                  <span>Saved Layers</span>
+                </SidebarMenuButton>
+              </RouterLink>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
               <RouterLink to="/about">
                 <SidebarMenuButton tooltip="About">
                   <Icon icon="heroicons:at-symbol" />

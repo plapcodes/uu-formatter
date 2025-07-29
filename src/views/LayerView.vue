@@ -54,7 +54,8 @@ function addGroup() {
         :group="ref(layerStore.parentGroup)"
         :depth="0"
         @update-group="updateParentGroup"
-        @selectLayer="layerStore.selectLayer"
+        @select-layer="layerStore.selectLayer"
+        @delete-layer="layerStore.deleteLayer"
       />
     </ScrollArea>
   </div>
