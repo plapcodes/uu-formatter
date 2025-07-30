@@ -4,7 +4,9 @@ import CenterScreen from '@/components/CenterScreen.vue';
 import Separator from '@/components/ui/separator/Separator.vue';
 import HoverButton from '@/components/HoverButton.vue';
 import Button from '@/components/ui/button/Button.vue';
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { Icon } from '@iconify/vue';
+import LayerExportContent from '@/components/LayerExportContent.vue';
 
 const layerStore = useLayerStore();
 </script>
@@ -18,23 +20,33 @@ const layerStore = useLayerStore();
       </div>
       <Separator orientation="horizontal" />
       <div v-for="element in layerStore.savedLayers" v-bind:key="element.id" class="mt-2">
-        <div class="w-full flex items-center justify-between">
-          <div class="flex flex-col">
-            <span class="text-lg font-semibold">{{ element.name }}</span>
-            <span class="text-sm text-muted-foreground">{{ element.description }}</span>
+        <Dialog>
+          <div class="w-full flex items-center justify-between">
+            <div class="flex flex-col">
+              <span class="text-lg font-semibold">{{ element.name }}</span>
+              <span class="text-sm text-muted-foreground">{{ element.description }}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <HoverButton hint="Export layer">
+                <DialogTrigger as-child>
+                  <Button variant="outline" size="icon">
+                    <Icon icon="heroicons:arrow-down-on-square" />
+                  </Button>
+                </DialogTrigger>
+              </HoverButton>
+              <HoverButton hint="Remove from saved layers">
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  @click="layerStore.deleteSavedLayerByObject(element)"
+                >
+                  <Icon icon="heroicons:trash" />
+                </Button>
+              </HoverButton>
+            </div>
           </div>
-          <div class="flex items-center">
-            <HoverButton hint="Remove from saved layers">
-              <Button
-                variant="destructive"
-                size="icon"
-                @click="layerStore.deleteSavedLayerByObject(element)"
-              >
-                <Icon icon="heroicons:trash" />
-              </Button>
-            </HoverButton>
-          </div>
-        </div>
+          <LayerExportContent :element="element" />
+        </Dialog>
       </div>
     </CenterScreen>
   </div>
