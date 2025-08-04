@@ -78,9 +78,9 @@ export function makeLayerGroup(config: LayerGroupConfig, regenerateId: boolean =
   const layers: (Layer | LayerGroup)[] = [];
   for (const layerConfig of config.layers) {
     if ('layers' in layerConfig) {
-      layers.push(makeLayerGroup(layerConfig as LayerGroupConfig));
+      layers.push(makeLayerGroup(layerConfig as LayerGroupConfig, regenerateId));
     } else {
-      layers.push(makeLayer(layerConfig as LayerConfig));
+      layers.push(makeLayer(layerConfig as LayerConfig, regenerateId));
     }
   }
   return {
@@ -148,4 +148,12 @@ export function processLayers(parentGroup: LayerGroup, text: string): string {
   }
 
   return processedText;
+}
+
+export function regenerateIDs(layer: Layer | LayerGroup): Layer | LayerGroup {
+  if ('layers' in layer) {
+    return makeLayerGroup(serializeLayerGroup(layer), true);
+  } else {
+    return makeLayer(serializeLayer(layer), true);
+  }
 }

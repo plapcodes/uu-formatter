@@ -10,6 +10,8 @@ import LayerExportContent from '@/components/LayerExportContent.vue';
 import LayerImportContent from '@/components/LayerImportContent.vue';
 
 const layerStore = useLayerStore();
+
+import { regenerateIDs } from '@/lib';
 </script>
 
 <template>
@@ -52,6 +54,15 @@ const layerStore = useLayerStore();
               <span class="text-sm text-muted-foreground">{{ element.description }}</span>
             </div>
             <div class="flex items-center gap-2">
+              <HoverButton hint="Add to editor">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  @click="layerStore.addLayerOrGroupToEditor(regenerateIDs(element))"
+                >
+                  <Icon icon="heroicons:plus" />
+                </Button>
+              </HoverButton>
               <HoverButton hint="Export layer">
                 <DialogTrigger as-child>
                   <Button variant="outline" size="icon">
