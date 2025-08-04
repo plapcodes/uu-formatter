@@ -11,6 +11,8 @@ import {
   SidebarFooter,
 } from '@/components/ui/sidebar';
 import { Icon } from '@iconify/vue';
+
+const version = import.meta.env.VITE_APP_VERSION;
 </script>
 
 <template>
@@ -63,6 +65,9 @@ import { Icon } from '@iconify/vue';
           <span>Source Code</span>
         </a>
       </SidebarMenuButton>
+      <SidebarGroup>
+        <SidebarGroupLabel>Version {{ version }}</SidebarGroupLabel>
+      </SidebarGroup>
     </SidebarFooter>
   </Sidebar>
 </template>
