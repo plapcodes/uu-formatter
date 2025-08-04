@@ -144,5 +144,15 @@ export const useLayerStore = defineStore('layer', {
         return false;
       });
     },
+    addLayerOrGroupToEditor(layer: Layer | LayerGroup) {
+      if (!this.parentGroup) return;
+
+      this.parentGroup.layers.unshift(layer);
+    },
+    addLayerOrGroupToSaved(layer: Layer | LayerGroup) {
+      if (!this.savedLayers) return;
+
+      this.savedLayers.push(layer);
+    },
   },
 });

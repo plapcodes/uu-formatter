@@ -7,6 +7,7 @@ import Button from '@/components/ui/button/Button.vue';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { Icon } from '@iconify/vue';
 import LayerExportContent from '@/components/LayerExportContent.vue';
+import LayerImportContent from '@/components/LayerImportContent.vue';
 
 const layerStore = useLayerStore();
 </script>
@@ -14,10 +15,34 @@ const layerStore = useLayerStore();
 <template>
   <div class="w-full h-full">
     <CenterScreen>
-      <div class="flex flex-col w-full mb-2">
-        <h1 class="text-2xl font-bold">Saved Layers</h1>
-        <p class="text-sm text-muted-foreground">Here you can view and manage your saved layers.</p>
+      <div class="flex flex-row justify-between items-center">
+        <div class="flex flex-col w-full mb-2">
+          <h1 class="text-2xl font-bold">Saved Layers</h1>
+          <p class="text-sm text-muted-foreground">
+            Here you can view and manage your saved layers.
+          </p>
+        </div>
+        <div class="flex flex-row items-center">
+          <Dialog>
+            <HoverButton hint="Import Layer">
+              <DialogTrigger as-child>
+                <Button variant="outline" size="icon">
+                  <Icon icon="heroicons:cloud-arrow-up" />
+                </Button>
+              </DialogTrigger>
+            </HoverButton>
+
+            <LayerImportContent
+              @layer-imported="
+                (layer) => {
+                  layerStore.addLayerOrGroupToSaved(layer);
+                }
+              "
+            />
+          </Dialog>
+        </div>
       </div>
+
       <Separator orientation="horizontal" />
       <div v-for="element in layerStore.savedLayers" v-bind:key="element.id" class="mt-2">
         <Dialog>

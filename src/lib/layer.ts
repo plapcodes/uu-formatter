@@ -4,6 +4,7 @@ import type { ITransformer, TransformerConfig } from './transformers';
 import { createActivator } from './activators';
 import { createSelector } from './selectors';
 import { createTransformer } from './transformers';
+import { uuid } from './uuid';
 
 /**
  * A Layer represents a single, self-contained processing step
@@ -58,9 +59,9 @@ export interface LayerGroupConfig {
   layers: (LayerConfig | LayerGroupConfig)[];
 }
 
-export function makeLayer(config: LayerConfig): Layer {
+export function makeLayer(config: LayerConfig, regenerateId: boolean = true): Layer {
   return {
-    id: config.id,
+    id: regenerateId ? uuid() : config.id,
     name: config.name,
     description: config.description,
     enabled: config.enabled,
@@ -73,7 +74,7 @@ export function makeLayer(config: LayerConfig): Layer {
   };
 }
 
-export function makeLayerGroup(config: LayerGroupConfig): LayerGroup {
+export function makeLayerGroup(config: LayerGroupConfig, regenerateId: boolean = true): LayerGroup {
   const layers: (Layer | LayerGroup)[] = [];
   for (const layerConfig of config.layers) {
     if ('layers' in layerConfig) {
@@ -83,7 +84,7 @@ export function makeLayerGroup(config: LayerGroupConfig): LayerGroup {
     }
   }
   return {
-    id: config.id,
+    id: regenerateId ? uuid() : config.id,
     name: config.name,
     description: config.description,
     expanded: config.expanded,

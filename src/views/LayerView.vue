@@ -7,6 +7,8 @@ import type { LayerGroup } from '@/lib';
 import Button from '@/components/ui/button/Button.vue';
 import HoverButton from '@/components/HoverButton.vue';
 import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
+import LayerImportContent from '@/components/LayerImportContent.vue';
 
 const layerStore = useLayerStore();
 
@@ -34,6 +36,23 @@ function addGroup() {
     <div class="w-full flex justify-between items-center flex-0">
       <h1 class="text-2xl font-bold">Text Processing Layers</h1>
       <div class="flex flex-row gap-4 items-center">
+        <Dialog>
+          <HoverButton hint="Import Layer">
+            <DialogTrigger as-child>
+              <Button variant="outline" size="icon">
+                <Icon icon="heroicons:cloud-arrow-up" />
+              </Button>
+            </DialogTrigger>
+          </HoverButton>
+
+          <LayerImportContent
+            @layer-imported="
+              (layer) => {
+                layerStore.addLayerOrGroupToEditor(layer);
+              }
+            "
+          />
+        </Dialog>
         <HoverButton hint="Add Layer">
           <Button variant="outline" size="icon" @click="addLayer">
             <Icon icon="heroicons:plus" />
