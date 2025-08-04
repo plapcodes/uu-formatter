@@ -12,8 +12,9 @@ import { toast, Toaster } from 'vue-sonner';
 import 'vue-sonner/style.css';
 import { useColorMode } from '@vueuse/core';
 import { useLayerStore } from '@/stores/layer';
-import { processLayers } from '@/lib';
+import { processLayers, countCharacters } from '@/lib';
 import Textarea from '@/components/ui/textarea/Textarea.vue';
+import { useConfigStore } from '@/stores/config';
 
 const input = ref('');
 const output = ref('');
@@ -22,6 +23,7 @@ const { copy } = useClipboard({ source: output.value, legacy: true });
 const mode = useColorMode();
 
 const layerStore = useLayerStore();
+const configStore = useConfigStore();
 
 function updateText() {
   if (layerStore.parentGroup) {
@@ -74,6 +76,14 @@ layerStore.$subscribe(() => {
                 </Button>
               </HoverButton>
             </div>
+            <div
+              v-if="configStore.characterCountingInput"
+              class="absolute right-4 bottom-4 flex items-center gap-2 z-10"
+            >
+              <span class="text-sm text-muted-foreground select-none">
+                {{ countCharacters(input, configStore.characterCountingAlgorithm) }} characters
+              </span>
+            </div>
             <Textarea
               id="text-input"
               class="w-full h-full resize-none overflow-auto"
@@ -91,6 +101,14 @@ layerStore.$subscribe(() => {
                   <Icon icon="heroicons:clipboard" />
                 </Button>
               </HoverButton>
+            </div>
+            <div
+              v-if="configStore.characterCountingInput"
+              class="absolute right-4 bottom-4 flex items-center gap-2 z-10"
+            >
+              <span class="text-sm text-muted-foreground select-none">
+                {{ countCharacters(output, configStore.characterCountingAlgorithm) }} characters
+              </span>
             </div>
             <Textarea
               id="text-output"

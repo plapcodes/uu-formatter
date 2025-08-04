@@ -4,6 +4,7 @@ import { uuid } from './uuid';
 
 export * from './layer';
 export * from './utils';
+export * from './character';
 
 export function deselectAll(group: LayerGroup): LayerGroup {
   const deselectRecursively = (layers: (Layer | LayerGroup)[]): (Layer | LayerGroup)[] => {

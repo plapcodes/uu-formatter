@@ -44,6 +44,34 @@ const settingsStore = useSettingsStore();
           />
         </CollapsibleContent>
       </Collapsible>
+      <Collapsible
+        class="flex flex-col gap-2 items-center"
+        v-model:open="settingsStore.editorSettings"
+      >
+        <div class="flex flex-row items-center justify-between w-full">
+          <span class="text-xl font-bold">Editor Settings</span>
+          <CollapsibleTrigger>
+            <Button variant="ghost">
+              <Icon icon="heroicons:chevron-down" />
+              <span class="sr-only">Toggle</span>
+            </Button>
+          </CollapsibleTrigger>
+        </div>
+
+        <CollapsibleContent class="w-full">
+          <AppSetting
+            name="Input Character Counting"
+            description="Should character counting be enabled for the input textarea?"
+            v-model="configStore.characterCountingInput"
+          />
+          <Separator class="my-1" />
+          <AppSetting
+            name="Output Character Counting"
+            description="Should character counting be enabled for the output textarea?"
+            v-model="configStore.characterCountingOutput"
+          />
+        </CollapsibleContent>
+      </Collapsible>
     </CenterScreen>
   </ScrollArea>
 </template>
