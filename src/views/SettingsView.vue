@@ -21,7 +21,7 @@ const settingsStore = useSettingsStore();
         v-model:open="settingsStore.sidebarSettings"
       >
         <div class="flex flex-row items-center justify-between w-full">
-          <span class="text-xl font-bold">Sidebar Settings</span>
+          <span class="text-lg md:text-xl font-bold">Sidebar Settings</span>
           <CollapsibleTrigger>
             <Button variant="ghost">
               <Icon icon="heroicons:chevron-down" />

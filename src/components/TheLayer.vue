@@ -150,121 +150,160 @@ onMounted(() => {
 
 <template>
   <div class="the-layer flex items-center gap-2 px-4 py-1 flex-wrap justify-center">
-    <div class="flex flex-nowrap items-center gap-2">
-      <div class="uppercase italic text-muted-foreground">If</div>
-      <Select @update:model-value="updateLayerActivator" v-model="activator">
-        <SelectTrigger>
-          <SelectValue placeholder="Select an Activator" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Default</SelectLabel>
-            <SelectItem
-              v-for="manifest of ACTIVATOR_MANIFEST"
-              v-bind:key="manifest.type"
-              :value="manifest.type"
-              >{{ manifest.name }}</SelectItem
-            >
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-      <LayerSettingDrawer
-        v-if="activatorManifest != undefined"
-        :manifest="activatorManifest"
-        :model-value="props.layer.value.layerActivator"
-      >
-        <HoverButton hint="Edit Layer Activator">
-          <Button variant="outline" size="icon">
-            <Icon icon="heroicons:pencil-square" />
-          </Button>
-        </HoverButton>
-      </LayerSettingDrawer>
-      <div class="uppercase italic text-muted-foreground">Then Select</div>
-      <Select @update:model-value="updateLayerSelector" v-model="selector">
-        <SelectTrigger>
-          <SelectValue placeholder="Select a Selector" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Default</SelectLabel>
-            <SelectItem
-              v-for="manifest of SELECTOR_MANIFEST"
-              v-bind:key="manifest.type"
-              :value="manifest.type"
-              >{{ manifest.name }}</SelectItem
-            >
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-      <LayerSettingDrawer
-        v-if="selectorManifest != undefined"
-        :manifest="selectorManifest"
-        :model-value="props.layer.value.selector"
-      >
-        <HoverButton hint="Edit Layer Selector">
-          <Button variant="outline" size="icon">
-            <Icon icon="heroicons:pencil-square" />
-          </Button>
-        </HoverButton>
-      </LayerSettingDrawer>
+    <div class="flex flex-wrap items-center gap-2">
+      <div class="flex-col items-center gap-0.5">
+        <div class="flex flex-row items-center justify-center gap-2">
+          <div class="italic text-muted-foreground text-center">Layer Activator</div>
+          <HoverButton hint="Decides when the entire layer is activated.">
+            <Icon icon="heroicons:question-mark-circle" class="w-4 h-4 text-muted-foreground" />
+          </HoverButton>
+        </div>
+        <div class="flex flex-row items-center gap-2">
+          <Select @update:model-value="updateLayerActivator" v-model="activator">
+            <SelectTrigger>
+              <SelectValue placeholder="Select an Activator" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Default</SelectLabel>
+                <SelectItem
+                  v-for="manifest of ACTIVATOR_MANIFEST"
+                  v-bind:key="manifest.type"
+                  :value="manifest.type"
+                  >{{ manifest.name }}</SelectItem
+                >
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <LayerSettingDrawer
+            v-if="activatorManifest != undefined"
+            :manifest="activatorManifest"
+            :model-value="props.layer.value.layerActivator"
+          >
+            <HoverButton hint="Edit Layer Activator">
+              <Button variant="outline" size="icon">
+                <Icon icon="heroicons:pencil-square" />
+              </Button>
+            </HoverButton>
+          </LayerSettingDrawer>
+        </div>
+      </div>
+
+      <div class="flex-col items-center gap-0.5">
+        <div class="flex flex-row items-center justify-center gap-2">
+          <div class="italic text-muted-foreground text-center">Layer Selector</div>
+          <HoverButton hint="Decides which elements are selected in the layer.">
+            <Icon icon="heroicons:question-mark-circle" class="w-4 h-4 text-muted-foreground" />
+          </HoverButton>
+        </div>
+        <div class="flex flex-row items-center gap-2">
+          <Select @update:model-value="updateLayerSelector" v-model="selector">
+            <SelectTrigger>
+              <SelectValue placeholder="Select a Selector" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Default</SelectLabel>
+                <SelectItem
+                  v-for="manifest of SELECTOR_MANIFEST"
+                  v-bind:key="manifest.type"
+                  :value="manifest.type"
+                  >{{ manifest.name }}</SelectItem
+                >
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <LayerSettingDrawer
+            v-if="selectorManifest != undefined"
+            :manifest="selectorManifest"
+            :model-value="props.layer.value.selector"
+          >
+            <HoverButton hint="Edit Layer Selector">
+              <Button variant="outline" size="icon">
+                <Icon icon="heroicons:pencil-square" />
+              </Button>
+            </HoverButton>
+          </LayerSettingDrawer>
+        </div>
+      </div>
     </div>
-    <div class="flex flex-nowrap items-center gap-2">
-      <div class="uppercase italic text-muted-foreground">For Each, If</div>
-      <Select @update:model-value="updateSelectionActivator" v-model="selectionActivator">
-        <SelectTrigger>
-          <SelectValue placeholder="Select an Activator" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Default</SelectLabel>
-            <SelectItem
-              v-for="manifest of ACTIVATOR_MANIFEST"
-              v-bind:key="manifest.type"
-              :value="manifest.type"
-              >{{ manifest.name }}</SelectItem
-            >
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-      <LayerSettingDrawer
-        v-if="selectionActivatorManifest != undefined"
-        :manifest="selectionActivatorManifest"
-        :model-value="props.layer.value.selectionActivator"
-      >
-        <HoverButton hint="Edit Selection Activator">
-          <Button variant="outline" size="icon">
-            <Icon icon="heroicons:pencil-square" />
-          </Button>
-        </HoverButton>
-      </LayerSettingDrawer>
-      <div class="uppercase italic text-muted-foreground">DO</div>
-      <Select @update:model-value="updateLayerTransformer" v-model="transformer">
-        <SelectTrigger>
-          <SelectValue placeholder="Select a Transformer" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Default</SelectLabel>
-            <SelectItem
-              v-for="manifest of TRANSFORMER_MANIFEST"
-              v-bind:key="manifest.type"
-              :value="manifest.type"
-              >{{ manifest.name }}</SelectItem
-            >
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-      <LayerSettingDrawer
-        v-if="transformerManifest != undefined"
-        :manifest="transformerManifest"
-        :model-value="props.layer.value.transformer"
-      >
-        <HoverButton hint="Edit Layer Transformer">
-          <Button variant="outline" size="icon">
-            <Icon icon="heroicons:pencil-square" />
-          </Button>
-        </HoverButton>
-      </LayerSettingDrawer>
+    <div class="flex flex-wrap items-center gap-2">
+      <div class="flex-col items-center gap-0.5">
+        <div class="flex flex-row items-center justify-center gap-2">
+          <div class="italic text-muted-foreground text-center">Selection Activator</div>
+          <HoverButton hint="Decides when a particular selection is activated.">
+            <Icon icon="heroicons:question-mark-circle" class="w-4 h-4 text-muted-foreground" />
+          </HoverButton>
+        </div>
+        <div class="flex flex-row items-center gap-2">
+          <Select @update:model-value="updateSelectionActivator" v-model="selectionActivator">
+            <SelectTrigger>
+              <SelectValue placeholder="Select an Activator" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Default</SelectLabel>
+                <SelectItem
+                  v-for="manifest of ACTIVATOR_MANIFEST"
+                  v-bind:key="manifest.type"
+                  :value="manifest.type"
+                  >{{ manifest.name }}</SelectItem
+                >
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <LayerSettingDrawer
+            v-if="selectionActivatorManifest != undefined"
+            :manifest="selectionActivatorManifest"
+            :model-value="props.layer.value.selectionActivator"
+          >
+            <HoverButton hint="Edit Selection Activator">
+              <Button variant="outline" size="icon">
+                <Icon icon="heroicons:pencil-square" />
+              </Button>
+            </HoverButton>
+          </LayerSettingDrawer>
+        </div>
+      </div>
+
+      <div class="flex-col items-center gap-0.5">
+        <div class="flex flex-row items-center justify-center gap-2">
+          <div class="italic text-muted-foreground text-center">Layer Transformer</div>
+          <HoverButton hint="Transforms the activated selections.">
+            <Icon icon="heroicons:question-mark-circle" class="w-4 h-4 text-muted-foreground" />
+          </HoverButton>
+        </div>
+        <div class="flex flex-row items-center gap-2">
+          <Select @update:model-value="updateLayerTransformer" v-model="transformer">
+            <SelectTrigger>
+              <SelectValue placeholder="Select a Transformer" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Default</SelectLabel>
+
+                <SelectItem
+                  v-for="manifest of TRANSFORMER_MANIFEST"
+                  v-bind:key="manifest.type"
+                  :value="manifest.type"
+                  >{{ manifest.name }}</SelectItem
+                >
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <LayerSettingDrawer
+            v-if="transformerManifest != undefined"
+            :manifest="transformerManifest"
+            :model-value="props.layer.value.transformer"
+          >
+            <HoverButton hint="Edit Layer Transformer">
+              <Button variant="outline" size="icon">
+                <Icon icon="heroicons:pencil-square" />
+              </Button>
+            </HoverButton>
+          </LayerSettingDrawer>
+        </div>
+      </div>
     </div>
   </div>
 </template>

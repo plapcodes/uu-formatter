@@ -33,9 +33,11 @@ function addGroup() {
 
 <template>
   <div class="layer-view flex flex-col items-center gap-2 h-full max-h-full">
-    <div class="w-full flex justify-between items-center flex-0">
-      <h1 class="text-2xl font-bold">Text Processing Layers</h1>
-      <div class="flex flex-row gap-4 items-center">
+    <div
+      class="w-full flex flex-wrap justify-between items-center flex-0 flex-col md:flex-row gap-2"
+    >
+      <h1 class="text-2xl font-bold text-center">Text Processing Layers</h1>
+      <div class="flex flex-row gap-4 items-center justify-center w-auto">
         <Dialog>
           <HoverButton hint="Import Layer">
             <DialogTrigger as-child>

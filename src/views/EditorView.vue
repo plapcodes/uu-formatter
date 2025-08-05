@@ -62,10 +62,14 @@ layerStore.$subscribe(() => {
 </script>
 
 <template>
-  <main class="flex-1 shrink-0 min-h-0 h-full">
+  <main class="flex-1 min-h-0">
     <Toaster position="bottom-right" :theme="mode == 'auto' ? 'system' : mode" />
-    <ResizablePanelGroup id="editor-group" direction="horizontal" class="h-full w-full gap-3">
-      <ResizablePanel id="layer-view-text" :default-size="50">
+    <ResizablePanelGroup
+      id="editor-group"
+      direction="horizontal"
+      class="responsive-panel-group gap-3 bg-background"
+    >
+      <ResizablePanel id="layer-view-text" :default-size="50" class="responsive-text-panel">
         <div class="flex flex-col items-center h-full gap-4">
           <div class="textbox flex-1">
             <div class="absolute right-4 top-4 flex items-center gap-2 z-10">
@@ -136,14 +140,20 @@ layerStore.$subscribe(() => {
           </div>
         </div>
       </ResizablePanel>
-      <ResizableHandle with-handle id="editor-handle" :class="expandedInput ? 'hidden' : ''" />
+      <ResizableHandle
+        with-handle
+        id="editor-handle"
+        :class="expandedInput ? 'hidden' : ''"
+        class="responsive-handle hidden md:flex"
+      />
       <ResizablePanel
         id="layer-view-group"
-        class="text-nowrap"
+        class="text-nowrap responsive-layer-panel"
         :default-size="50"
         :class="expandedInput ? 'hidden' : ''"
-        ><LayerView
-      /></ResizablePanel>
+      >
+        <LayerView />
+      </ResizablePanel>
     </ResizablePanelGroup>
   </main>
 </template>
@@ -155,7 +165,6 @@ textarea {
   resize: none;
   border: none;
   outline: none;
-  max-height: 150px;
   min-height: 100%;
   box-sizing: border-box;
 }
@@ -166,5 +175,69 @@ textarea {
   height: 100%;
   overflow: hidden;
   min-height: 0;
+}
+
+/* Mobile responsive styles */
+@media (max-width: 767px) {
+  .responsive-panel-group {
+    flex-direction: column !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 200vh !important;
+    max-height: 200vh !important;
+    gap: 0 !important;
+  }
+
+  .responsive-text-panel {
+    flex: 1;
+    max-height: calc(100vh - var(--header-height, 48px));
+    margin: 0;
+    padding: 0.75rem;
+  }
+
+  .responsive-layer-panel {
+    flex: 1 !important;
+    min-height: calc(50vh - 4px);
+    margin: 0;
+    padding: 0.75rem;
+  }
+
+  .responsive-handle {
+    min-height: 8px !important;
+    max-height: 8px !important;
+    height: 8px !important;
+    width: 100% !important;
+    cursor: row-resize !important;
+    flex: 0 0 8px !important;
+    margin: 0 !important;
+  }
+
+  .responsive-text-panel .textbox {
+    min-height: calc(50% - 0.5rem) !important;
+    height: calc(50% - 0.5rem) !important;
+  }
+
+  /* Remove max-height from textarea on mobile */
+  textarea {
+    max-height: none !important;
+    min-height: 150px;
+  }
+
+  /* Make main container full height on mobile */
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 768px) {
+  .responsive-panel-group {
+    flex-direction: row;
+  }
+
+  .responsive-handle {
+    cursor: col-resize;
+  }
 }
 </style>

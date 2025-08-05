@@ -181,14 +181,15 @@ function fixGhostImage(dataTransfer: DataTransfer, dragEl: HTMLElement) {
                 :icon="`heroicons-folder${element.expanded ? '-open' : ''}-solid`"
                 style="font-size: 18px"
               />
-              <span
-                class="text-xl"
+              <p
+                class="text-lg md:text-xl"
                 contenteditable="true"
                 @blur="updateName($event, element)"
                 @keydown.enter.prevent="finishEditing"
                 @paste="(e) => handlePaste(e)"
-                >{{ element.name }}</span
               >
+                {{ element.name }}
+              </p>
               <div class="ml-auto flex flex-row gap-4 items-center">
                 <TooltipProvider>
                   <Tooltip>
@@ -247,6 +248,5 @@ function fixGhostImage(dataTransfer: DataTransfer, dragEl: HTMLElement) {
 
 .layer-switch {
   margin-left: auto;
-  margin-right: 1rem;
 }
 </style>

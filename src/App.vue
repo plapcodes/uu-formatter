@@ -18,7 +18,7 @@ const configStore = useConfigStore();
         <header class="w-full flex-shrink-0 pt-1">
           <Navbar />
         </header>
-        <article class="p-4 justify-self-center flex-1 flex w-full h-full justify-center">
+        <article class="p-2 md:p-4 justify-self-center flex-1 flex w-full justify-center h-auto">
           <RouterView class="flex" />
         </article>
       </SidebarInset>

@@ -48,7 +48,7 @@ import { regenerateIDs } from '@/lib';
       <Separator orientation="horizontal" />
       <div v-for="element in layerStore.savedLayers" v-bind:key="element.id" class="mt-2">
         <Dialog>
-          <div class="w-full flex items-center justify-between">
+          <div class="w-full flex items-center justify-between gap-2">
             <div class="flex flex-col">
               <span class="text-lg font-semibold">{{ element.name }}</span>
               <span class="text-sm text-muted-foreground">{{ element.description }}</span>
