@@ -72,6 +72,34 @@ const settingsStore = useSettingsStore();
           />
         </CollapsibleContent>
       </Collapsible>
+      <Collapsible
+        class="flex flex-col gap-2 items-center"
+        v-model:open="settingsStore.undoRedoSettings"
+      >
+        <div class="flex flex-row items-center justify-between w-full">
+          <span class="text-xl font-bold">Undo / Redo Settings</span>
+          <CollapsibleTrigger>
+            <Button variant="ghost">
+              <Icon icon="heroicons:chevron-down" />
+              <span class="sr-only">Toggle</span>
+            </Button>
+          </CollapsibleTrigger>
+        </div>
+
+        <CollapsibleContent class="w-full">
+          <AppSetting
+            name="Undo History Length"
+            description="Number of undo states to keep in history."
+            v-model="configStore.undoHistoryLength"
+          />
+          <Separator class="my-1" />
+          <AppSetting
+            name="Redo History Length"
+            description="Number of redo states to keep in history."
+            v-model="configStore.redoHistoryLength"
+          />
+        </CollapsibleContent>
+      </Collapsible>
     </CenterScreen>
   </ScrollArea>
 </template>

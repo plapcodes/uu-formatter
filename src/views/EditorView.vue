@@ -2,7 +2,7 @@
 import LayerView from './LayerView.vue';
 import Button from '@/components/ui/button/Button.vue';
 import HoverButton from '@/components/HoverButton.vue';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import ResizablePanelGroup from '@/components/ui/resizable/ResizablePanelGroup.vue';
 import ResizableHandle from '@/components/ui/resizable/ResizableHandle.vue';
@@ -10,7 +10,7 @@ import ResizablePanel from '@/components/ui/resizable/ResizablePanel.vue';
 import { useClipboard } from '@vueuse/core';
 import { toast, Toaster } from 'vue-sonner';
 import 'vue-sonner/style.css';
-import { useColorMode } from '@vueuse/core';
+import { useColorMode, useMagicKeys } from '@vueuse/core';
 import { useLayerStore } from '@/stores/layer';
 import { processLayers, countCharacters } from '@/lib';
 import Textarea from '@/components/ui/textarea/Textarea.vue';
@@ -24,6 +24,22 @@ const mode = useColorMode();
 
 const layerStore = useLayerStore();
 const configStore = useConfigStore();
+
+const keys = useMagicKeys();
+const ctrlShiftZ = keys['Ctrl+Shift+Z'];
+const ctrlZ = keys['Ctrl+Z'];
+
+watch(ctrlShiftZ, (isPressed) => {
+  if (isPressed) {
+    layerStore.redo();
+  }
+});
+
+watch(ctrlZ, (isPressed) => {
+  if (isPressed && !ctrlShiftZ.value) {
+    layerStore.undo();
+  }
+});
 
 function updateText() {
   if (layerStore.parentGroup) {
