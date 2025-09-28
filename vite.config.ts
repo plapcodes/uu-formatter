@@ -4,10 +4,46 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vueDevTools from 'vite-plugin-vue-devtools';
 import tailwindcss from '@tailwindcss/vite';
+import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [vue(), vueDevTools(), tailwindcss()],
+  plugins: [vue(), vueDevTools(), tailwindcss(),
+    VitePWA({
+      registerType: 'prompt',
+      includeAssets: ['favicon.ico', 'icons/pwa-192x192.png', 'icons/pwa-512x512.png'],
+      manifest: {
+        id: 'com.plapcodes.uuformatter',
+        name: 'UU Formatter',
+        short_name: 'UUFormatter',
+        description: 'Unicode-based, markdown-like, configurable text formatter',
+        theme_color: '#ffffff',
+        background_color: '#ffffff',
+        display: 'standalone',
+        start_url: '/',
+        icons: [
+          {
+            src: '/icons/pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'any'
+          },
+          {
+            src: '/icons/pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any'
+          },
+          {
+            src: '/icons/pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable'
+          }
+        ]
+      }
+    })
+  ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -16,26 +52,10 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
-          if (id.includes('/src/views/')) {
-            return `views/${id.split('src/views/')[1].split('.')[0]}`;
-          }
-          if (id.includes('node_modules')) {
-            if (id.includes('vue') || id.includes('vue-router') || id.includes('pinia')) {
-              return 'vendor-vue';
-            }
-            if (
-              id.includes('reka-ui') ||
-              id.includes('vaul-vue') ||
-              id.includes('lucide-vue-next') ||
-              id.includes('@iconify/vue')
-            ) {
-              return 'vendor-ui';
-            }
-            return 'vendor';
-          }
-          return 'app';
-        },
+        manualChunks: {
+        'vendor-vue': ['vue', 'vue-router', 'pinia'],
+        'vendor-ui': ['reka-ui', 'vaul-vue', 'lucide-vue-next', '@iconify/vue']
+      }
       },
     },
   },

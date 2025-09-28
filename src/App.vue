@@ -4,6 +4,7 @@ import SidebarProvider from '@/components/ui/sidebar/SidebarProvider.vue';
 import SidebarInset from '@/components/ui/sidebar/SidebarInset.vue';
 import AppSidebar from './components/AppSidebar.vue';
 import Navbar from './components/Navbar.vue';
+import ReloadPrompt from './components/ReloadPrompt.vue';
 
 import { useConfigStore } from './stores/config';
 
@@ -23,5 +24,6 @@ const configStore = useConfigStore();
         </article>
       </SidebarInset>
     </SidebarProvider>
+    <ReloadPrompt />
   </div>
 </template>
